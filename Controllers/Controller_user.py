@@ -21,9 +21,9 @@ class ControllerUser:
     @staticmethod
     def insertUser(user:User)->dict:
       try:
-        existingUser = collection.find_one({"username":user.username})
-        if existingUser :
-          raise Exceptions.usuario_existente()
+        #existingUser = collection.find_one({"username":user.username})
+        #if existingUser :
+          #raise Exceptions.usuario_existente()
   
         senha_criptografada = hashlib.sha256(user.password.encode()).hexdigest()
         user.password = senha_criptografada
