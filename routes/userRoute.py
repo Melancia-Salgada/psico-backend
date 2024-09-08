@@ -1,5 +1,5 @@
 from fastapi import APIRouter, FastAPI, Depends,Header
-from routes.loginRoute import validar_token
+from routes.loginRoute import validar_token, validar_token_admin
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
 from models.userModel import User
@@ -18,11 +18,11 @@ app.add_middleware(
 )
 
 @userAPI.post("/novo-usuario", tags=["usuarios"])
-async def createUser(user:User): #
+async def createUser(user:User, Authorization: Annotated[Header, Depends(validar_token_admin)]): #
      return ControllerUser.insertUser(user)
 
 @userAPI.get("/listar-usuarios", tags=["usuarios"])
-async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token)]):
+async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token_admin)]):
      print(Authorization)
      return ControllerUser.getAllUsers()
 

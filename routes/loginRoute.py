@@ -24,6 +24,15 @@ async def validar_token(Authorization: Header= Depends(oauth2_scheme) ):
     
     print(Authorization)
     return LoginController.retornar_token(Authorization)
+
+@app.get("/validar-token-admin", tags=["login"])
+async def validar_token_admin(Authorization: Header= Depends(oauth2_scheme) ):
+   return LoginController.retornar_token_admin(Authorization)
+
+@app.get("/tipo-usuario/{token}", tags=["login"])
+async def retornar_tipo_usuario(token:str):#Authorization: Annotated[str, Header()]
+    return LoginController.tipo_token(token)
+
    
 @app.post("/login", tags=["login"])
 async def login_for_access_token(user_data: UserLogin) :
