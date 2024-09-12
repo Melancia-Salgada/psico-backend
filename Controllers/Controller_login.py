@@ -18,7 +18,7 @@ class LoginController:
             usuario = auth.authenticate_user(username,password)
             if usuario:
                 access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
-                token = jwt_token.create_access_token({"sub":usuario["username"]}, access_token_expires) 
+                token = jwt_token.create_access_token({"sub":usuario["tipo"]}, access_token_expires) 
                 return token
             else:
                 raise Exceptions.user_senha_incorretos()
