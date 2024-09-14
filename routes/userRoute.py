@@ -46,7 +46,7 @@ async def excluirUsuarios(username:str, Authorization: Annotated[Header, Depends
 #rotas relacionadas com a solicitação de cadastro
 
 @userAPI.post("/novo-cadastro", tags=["cadastro"])
-async def createUser(psi:Psicologo, Authorization: Annotated[Header, Depends(validar_token_admin)]): # 
+async def createUser(psi:Psicologo): # , Authorization: Annotated[Header, Depends(validar_token_admin)])
      return ControllerUser.insertUser(psi)
 
 @userAPI.get("/listar-usuarios-pendentes", tags=["cadastro"])
