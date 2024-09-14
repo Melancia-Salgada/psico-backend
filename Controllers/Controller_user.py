@@ -172,5 +172,22 @@ class ControllerUser:
       except Exception:
         raise Exceptions.erro_manipular_usuario()
 
+    @staticmethod 
+    def insertPsi(psi:Psicologo)->dict:
+      try:
+        existingPsi = collection.find_one({"username":psi.username})
+        if existingPsi :
+          raise Exceptions.Psicologo_existente()
+  
+        senha_criptografada = hashlib.sha256(psi.password.encode()).hexdigest()
+        psi.password = senha_criptografada
+        print(psi)
 
-    
+        result = collection.insert_one(dict(psi))
+        if not result:
+          raise ValueError("Erro ao manipular usuário Psicologo")
+        return {"message": status.HTTP_200_OK}
+      except HTTPException:
+        raise Exceptions.Psicologo_existente()
+      except ValueError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Erro ao manipular usuário")

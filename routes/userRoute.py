@@ -54,5 +54,8 @@ async def listarUsuariosPendentes(Authorization: Annotated[Header, Depends(valid
      print(Authorization)
      return ControllerUser.getAllUsersPendentes()
 
+@userAPI.post("/novo-psicologo", tags=["cadastro"])
+async def CreatePsi(psi:Psicologo):
+     return ControllerUser.insertPsi(psi)
 
 app.include_router(userAPI)
