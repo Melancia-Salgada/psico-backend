@@ -12,6 +12,7 @@ class Psicologo(BaseModel):
     phonenumber:str
     email:str
     CRP:str
+    CPF:str
     tipo: str |None = "Psicólogo"
     status: str | None = "pendente"
 
@@ -22,6 +23,7 @@ class Admin(BaseModel):
     password:str
     phonenumber:str
     email:str
+    CPF: str
     tipo: str |None = "Administrador"
 
 
