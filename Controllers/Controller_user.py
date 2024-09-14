@@ -1,5 +1,5 @@
 from configs.db import create_mongodb_connection
-from models.userModel import User, Psicologo
+from models.userModel import User, Psicologo,Admin
 import hashlib
 from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
@@ -37,6 +37,31 @@ class ControllerUser:
         raise Exceptions.usuario_existente()
       except ValueError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Erro ao manipular usuário")
+      
+
+    
+    @staticmethod
+    def insertUserAdmin(adm:Admin)->dict:
+      try:
+        existingUser = collection.find_one({"username":adm.username})
+        if existingUser :
+          raise Exceptions.usuario_existente()
+  
+        senha_criptografada = hashlib.sha256(adm.password.encode()).hexdigest()
+        adm.password = senha_criptografada
+        print(adm)
+
+        result = collection.insert_one(dict(adm))
+        if not result:
+          raise ValueError("Erro ao manipular usuário")
+        return {"message": status.HTTP_200_OK}
+      except HTTPException:
+        raise Exceptions.usuario_existente()
+      except ValueError:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Erro ao manipular usuário")
+      
+
+      
      
       
       
