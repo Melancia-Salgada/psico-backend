@@ -9,6 +9,9 @@ class User(BaseModel):
 class Psicologo(BaseModel): 
     username: str
     password:str
+    phonenumber:str
+    email:str
+    CRP:str
     tipo: str |None = "Psicólogo"
     status: str | None = "pendente"
 
@@ -17,6 +20,8 @@ class Psicologo(BaseModel):
 class Admin(BaseModel): 
     username: str
     password:str
+    phonenumber:str
+    email:str
     tipo: str |None = "Administrador"
   
    
