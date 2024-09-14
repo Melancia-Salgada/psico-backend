@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 from Controllers.token import ACCESS_TOKEN_EXPIRE_MINUTES,Token
 from fastapi import HTTPException, status
 from services.Exceptions import Exceptions
+from models.userModel import usuario_admin
 
 
 class LoginController:
@@ -14,12 +15,20 @@ class LoginController:
         try:
             jwt_token = Token()  
             auth = Authenticator()
+
+            if username == usuario_admin["username"] and password == usuario_admin["password"]:
+                access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
+                token = jwt_token.create_access_token({"sub":usuario_admin["tipo"]}, access_token_expires) 
+                return token
         
             usuario = auth.authenticate_user(username,password)
             if usuario:
                 access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
                 token = jwt_token.create_access_token({"sub":usuario["tipo"]}, access_token_expires) 
                 return token
+            
+            
+        
             else:
                 raise Exceptions.user_senha_incorretos()
         except Exception:

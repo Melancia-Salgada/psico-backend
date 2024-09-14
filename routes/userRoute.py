@@ -2,7 +2,7 @@ from fastapi import APIRouter, FastAPI, Depends,Header
 from routes.loginRoute import validar_token, validar_token_admin
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
-from models.userModel import User,Psicologo
+from models.userModel import User,Psicologo,Admin
 #importando controllers
 from Controllers.Controller_user import ControllerUser
 
@@ -17,9 +17,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@userAPI.post("/novo-usuario", tags=["usuarios"])
-async def createUser(user:User): # Authorization: Annotated[Header, Depends(validar_token_admin)]
-     return ControllerUser.insertUser(user)
+@userAPI.post("/novo-usuario-admin", tags=["usuarios"])
+async def createUserAdmin(adm:Admin, Authorization: Annotated[Header, Depends(validar_token_admin)]): # 
+     return ControllerUser.insertUser(adm)
 
 @userAPI.get("/listar-usuarios", tags=["usuarios"])
 async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token_admin)]):
@@ -46,7 +46,7 @@ async def excluirUsuarios(username:str, Authorization: Annotated[Header, Depends
 #rotas relacionadas com a solicitação de cadastro
 
 @userAPI.post("/novo-cadastro", tags=["cadastro"])
-async def createUser(psi:Psicologo, Authorization: Annotated[Header, Depends(validar_token_admin)]): # 
+async def createUser(psi:Psicologo): # , Authorization: Annotated[Header, Depends(validar_token_admin)])
      return ControllerUser.insertUser(psi)
 
 @userAPI.get("/listar-usuarios-pendentes", tags=["cadastro"])
