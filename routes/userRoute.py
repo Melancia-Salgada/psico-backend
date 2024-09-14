@@ -2,7 +2,7 @@ from fastapi import APIRouter, FastAPI, Depends,Header
 from routes.loginRoute import validar_token, validar_token_admin
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
-from models.userModel import User
+from models.userModel import User,Psicologo
 #importando controllers
 from Controllers.Controller_user import ControllerUser
 
@@ -42,5 +42,17 @@ async def atualizarUsuario(user:User, username ,Authorization: Annotated[Header,
 @userAPI.delete("/deletar-usuario/{username}", tags=["usuarios"])
 async def excluirUsuarios(username:str, Authorization: Annotated[Header, Depends(validar_token)]):
      return ControllerUser.deleteUser(username)
+
+#rotas relacionadas com a solicitação de cadastro
+
+@userAPI.post("/novo-cadastro", tags=["cadastro"])
+async def createUser(psi:Psicologo): # Authorization: Annotated[Header, Depends(validar_token_admin)]
+     return ControllerUser.insertUser(psi)
+
+@userAPI.get("/listar-usuarios-pendentes", tags=["cadastro"])
+async def listarUsuariosPendentes(Authorization: Annotated[Header, Depends(validar_token_admin)]):
+     print(Authorization)
+     return ControllerUser.getAllUsersPendentes()
+
 
 app.include_router(userAPI)

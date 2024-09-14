@@ -1,5 +1,5 @@
 from configs.db import create_mongodb_connection
-from models.userModel import User
+from models.userModel import User, Psicologo
 import hashlib
 from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
@@ -7,8 +7,8 @@ import logging
 
 # Configurações de conexão com o MongoDB
 connection_string = "mongodb://localhost:27017/"
-database_name = "pokecep_db"
-collection_name = "users"
+database_name = "easypsi"
+collection_name = "psicologo"
 
 # Criando uma conexão com o MongoDB
 db = create_mongodb_connection(connection_string, database_name)
@@ -19,16 +19,17 @@ class ControllerUser:
       pass
 
     @staticmethod
-    def insertUser(user:User)->dict:
+    def insertUser(psi:Psicologo)->dict:
       try:
-        #existingUser = collection.find_one({"username":user.username})
-        #if existingUser :
-          #raise Exceptions.usuario_existente()
+        existingUser = collection.find_one({"username":psi.username})
+        if existingUser :
+          raise Exceptions.usuario_existente()
   
-        senha_criptografada = hashlib.sha256(user.password.encode()).hexdigest()
-        user.password = senha_criptografada
-        print(user)
-        result = collection.insert_one(dict(user))
+        senha_criptografada = hashlib.sha256(psi.password.encode()).hexdigest()
+        psi.password = senha_criptografada
+        print(psi)
+
+        result = collection.insert_one(dict(psi))
         if not result:
           raise ValueError("Erro ao manipular usuário")
         return {"message": status.HTTP_200_OK}
@@ -44,11 +45,27 @@ class ControllerUser:
     def getAllUsers():
         try:
       # Obtendo todos os documentos da coleção como uma lista de dicionários
-          users = [user for user in collection.find({})]  # pega cada elemento da collection e armazena na lista
+          users = [psi for psi in collection.find({})]  # pega cada elemento da collection e armazena na lista
 
         # Convertendo o campo '_id' para uma string em cada documento, é necessário para retornar 
-          for user in users:
-            user["_id"] = str(user["_id"])
+          for psi in users:
+            psi["_id"] = str(psi["_id"])
+
+          return {"users": users}
+        except Exception:
+         raise Exceptions.erro_manipular_usuario()
+        
+
+    @staticmethod
+    def getAllUsersPendentes():
+        try:
+      # Obtendo todos os documentos da coleção como uma lista de dicionários
+          users = [psi for psi in collection.find({"status": {"$exists": True, "$eq": "pendente"}})]
+  # pega cada elemento da collection e armazena na lista
+
+        # Convertendo o campo '_id' para uma string em cada documento, é necessário para retornar 
+          for psi in users:
+            psi["_id"] = str(psi["_id"])
 
           return {"users": users}
         except Exception:
@@ -63,10 +80,10 @@ class ControllerUser:
                raise Exceptions.erro_manipular_usuario()
             
             found_users = []
-            for user in users:
+            for psi in users:
                 # Convert ObjectId to string if needed
-                user["_id"] = str(user["_id"])
-                found_users.append(user)
+                psi["_id"] = str(psi["_id"])
+                found_users.append(psi)
             return found_users
         except Exception:
          raise Exceptions.erro_manipular_usuario()
@@ -74,16 +91,16 @@ class ControllerUser:
     @staticmethod
     def getSingleUser(email):
         try:
-            user = collection.find_one({"email": email})
-            return user
+            psi = collection.find_one({"email": email})
+            return psi
         except Exception:
           raise Exceptions.erro_manipular_usuario()
 
     @staticmethod
     def editUser(email):
       try:
-        user  = collection.find({"email":email})
-        return user
+        psi  = collection.find({"email":email})
+        return psi
       except Exception:
         raise Exceptions.erro_manipular_usuario()
       

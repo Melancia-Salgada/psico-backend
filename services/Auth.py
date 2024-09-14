@@ -4,8 +4,8 @@ from services.Exceptions import Exceptions
 
 # Configurações de conexão com o MongoDB
 connection_string = "mongodb://localhost:27017/"
-database_name = "pokecep_db"
-collection_name = "users"
+database_name = "easypsi"
+collection_name = "psicologo"
 
 # Criando uma conexão com o MongoDB
 db = create_mongodb_connection(connection_string, database_name)
