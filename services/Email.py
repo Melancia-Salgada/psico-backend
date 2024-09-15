@@ -53,7 +53,7 @@ class ControllerEmail:
                 <p>Recebemos a sua solicitação de cadastro na EasyPsi</p>
                 <br>
                 <p>Segue o código abaixo abaixo para primeiro login na plataforma:</p>
-                <p>{codigo}</p>
+                <p><strong>{codigo}</strong></p>
                 <br>
                 <p>Se você não solicitou esse e-mail de código de login, não precisa se preocupar</p>
                 <p>Basta ignorar esse e-mail</p>
@@ -73,6 +73,8 @@ class ControllerEmail:
  
             # Envio do e-mail
             await fm.send_message(message)
+
+            return codigo
         except Exception as e:
             # Tratamento de exceções
             print("Erro ao enviar e-mail:", e)

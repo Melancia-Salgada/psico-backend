@@ -201,17 +201,16 @@ class ControllerUser:
     @staticmethod 
     async def insertPsi(psi:Psicologo)->dict:
       try:
-        existingPsi = collection.find_one({"username":psi.username})
-        if existingPsi :
-          raise Exceptions.usuario_existente()
+        #existingPsi = collection.find_one({"username":psi.username})
+        #if existingPsi :
+          #raise Exceptions.usuario_existente()
   
         senha_criptografada = hashlib.sha256(psi.password.encode()).hexdigest()
         psi.password = senha_criptografada
         print(psi)
 
-        print(psi.email)
-
-        await ControllerEmail.enviarEmailConfirmacao(dict(psi))
+        
+        codigo_confirmacao = await ControllerEmail.enviarEmailConfirmacao(dict(psi))
 
         result = collection.insert_one(dict(psi))
         if not result:
