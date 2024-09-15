@@ -163,9 +163,11 @@ class ControllerUser:
                 raise Exceptions.erro_manipular_usuario()
         except Exception:
             raise Exceptions.erro_manipular_usuario()
-
-        
-
+          
+    @staticmethod
+    def aprovarPsi(CPF : str):
+      collection.update_one({"CPF" : CPF}, {"$set" : {"status" : "aprovado"}})
+            
     @staticmethod
     def update_user_senha(user_data):
       try:

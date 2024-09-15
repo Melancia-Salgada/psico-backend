@@ -64,9 +64,8 @@ async def CreatePsi(email: str):
 
 
 @userAPI.patch("/aprovar-psicologo/{CPF}", tags=["usuarios"]) 
-async def aprovarPsi(psi: Psicologo, CPF , Authorization: Annotated[Header, Depends(validar_token_admin)]):
-     psiAprovado = psi.status = "aprovado"
-     return ControllerUser.updateUser(dict(psiAprovado), CPF)
+async def aprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_token_admin)]
+     return ControllerUser.aprovarPsi(CPF)
 
 
 
