@@ -46,7 +46,6 @@ async def excluirUsuarios(username:str, Authorization: Annotated[Header, Depends
 
 #rotas relacionadas com a solicitação de cadastro
 
-
 @userAPI.post("/novo-psicologo", tags=["cadastro"])
 async def CreatePsi(psi:Psicologo):
      return await ControllerUser.insertPsi(psi)
