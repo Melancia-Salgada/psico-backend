@@ -46,21 +46,19 @@ async def excluirUsuarios(username:str, Authorization: Annotated[Header, Depends
 
 #rotas relacionadas com a solicitação de cadastro
 
+@userAPI.post("/solicitar-codigo-confirmacao", tags=["cadastro"])
+async def CreatePsi(psi:Psicologo):
+     return await ControllerUser.obterCodigoConfirmacao(psi)
+
 @userAPI.post("/novo-psicologo", tags=["cadastro"])
 async def CreatePsi(psi:Psicologo):
-     return await ControllerUser.insertPsi(psi)
+     return await ControllerUser.obterCodigoConfirmacao(psi)
 
 
-@userAPI.get("/listar-usuarios-pendentes", tags=["cadastro"])
+@userAPI.get("/listar-psicologos-pendentes", tags=["cadastro"])
 async def listarUsuariosPendentes(Authorization: Annotated[Header, Depends(validar_token_admin)]):
      print(Authorization)
      return ControllerUser.getAllUsersPendentes()
-
-
-@userAPI.post("/email/{email}", tags=["cadastro"])
-async def CreatePsi(email: str):
-    await email24Depois(email)  # Aguarda a execução da função assíncrona
-    return {"message": f"E-mail enviado para {email}"}
 
 
 @userAPI.patch("/aprovar-psicologo/{CPF}", tags=["usuarios"]) 
