@@ -7,6 +7,7 @@ from starlette.responses import JSONResponse
 from Controllers.Controller_user import User
 from models.userModel import Psicologo
 import random
+import string
  
  
 # modelo de email a ser enviado
@@ -36,28 +37,23 @@ class ControllerEmail:
       pass
 
     @staticmethod
-    def gerar_numeros_aleatorios():
-        numeros = random.sample(range(1, 61), 6)  # Gera 6 números aleatórios entre 1 e 60
-        return numeros
-
+    def gerar_string_aleatoria(digitos: int = 6) -> str:
+        return ''.join(random.choices(string.digits, k=digitos))
+       
     @staticmethod
     async def enviarEmailConfirmacao(user: dict): 
         try:
             emailusuario = user["email"]
             username = user["username"]
-            
-            numeros_aleatorios = ControllerEmail.gerar_numeros_aleatorios()
-
-             # Converter a lista de números para uma string
-            numeros_aleatorios_str = str(numeros_aleatorios)
-            
+            codigo = ControllerEmail.gerar_string_aleatoria()
+           
        
-            html = """
+            html = f"""
                 <h1>Olá, {username}</h1>
                 <p>Recebemos a sua solicitação de cadastro na EasyPsi</p>
                 <br>
                 <p>Segue o código abaixo abaixo para primeiro login na plataforma:</p>
-                <p>{numeros_aleatorios_str} </p>
+                <p>{codigo}</p>
                 <br>
                 <p>Se você não solicitou esse e-mail de código de login, não precisa se preocupar</p>
                 <p>Basta ignorar esse e-mail</p>
