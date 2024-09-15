@@ -33,6 +33,12 @@ class Exceptions(Exception):
     detail="Já existe um usuário cadastrado com este email! Clique em redefinir senha ou se cadastre usando um novo email",)
     return credentials_exception
   
+  def erro_email():
+    credentials_exception = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail="Opa! Erro ao encontrar o seu email. Solicite o cadastro novamente por favor",)
+    return credentials_exception
+  
   def cliente_existente():
     credentials_exception = ValueError(
     status_code=status.HTTP_404_NOT_FOUND,

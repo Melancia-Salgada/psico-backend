@@ -16,8 +16,9 @@ db = create_mongodb_connection(connection_string, database_name)
 collection = db[collection_name] #todas as operações de usuarios podem usar essa collection
 
 class ControllerUser:
+    codigo_login = ""
     def __init__(self) -> None:
-      pass
+     pass
 
     @staticmethod
     def insertUser(psi:Psicologo)->dict:
@@ -199,9 +200,22 @@ class ControllerUser:
             raise Exceptions.erro_manipular_usuario()
       except Exception:
         raise Exceptions.erro_manipular_usuario()
+      
+    @staticmethod
+    async def obterCodigoConfirmacao(psi:Psicologo):
+       
+      try:
+        codigo_confirmacao = await ControllerEmail.enviarEmailConfirmacao(dict(psi))
+        ControllerUser.codigo_login = codigo_confirmacao
+        return codigo_confirmacao
+
+      except Exception:
+         raise Exceptions.erro_email()
+       
+
 
     @staticmethod 
-    async def insertPsi(psi:Psicologo)->dict:
+    async def insertPsi(psi:Psicologo, codigo_digitado:str)->dict:
       try:
         #existingPsi = collection.find_one({"username":psi.username})
         #if existingPsi :
@@ -212,11 +226,11 @@ class ControllerUser:
         print(psi)
 
         
-        codigo_confirmacao = await ControllerEmail.enviarEmailConfirmacao(dict(psi))
-
-        result = collection.insert_one(dict(psi))
-        if not result:
-          raise ValueError("Erro ao manipular usuário Psicologo")
+        #codigo_confirmacao = await ControllerEmail.enviarEmailConfirmacao(dict(psi))
+        if(codigo_digitado == ControllerUser) :
+          result = collection.insert_one(dict(psi))
+          if not result:
+            raise ValueError("Erro ao manipular usuário Psicologo")
         return {"message": status.HTTP_200_OK}
       except HTTPException:
         raise Exceptions.usuario_existente()
