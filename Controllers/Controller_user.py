@@ -3,6 +3,7 @@ from models.userModel import User, Psicologo,Admin
 import hashlib
 from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
+from services.Email import ControllerEmail
 import logging
 
 # Configurações de conexão com o MongoDB
@@ -86,7 +87,7 @@ class ControllerUser:
         try:
       # Obtendo todos os documentos da coleção como uma lista de dicionários
           users = [psi for psi in collection.find({"status": {"$exists": True, "$eq": "pendente"}})]
-  # pega cada elemento da collection e armazena na lista
+      # pega cada elemento da collection e armazena na lista
 
         # Convertendo o campo '_id' para uma string em cada documento, é necessário para retornar 
           for psi in users:
@@ -198,21 +199,25 @@ class ControllerUser:
         raise Exceptions.erro_manipular_usuario()
 
     @staticmethod 
-    def insertPsi(psi:Psicologo)->dict:
+    async def insertPsi(psi:Psicologo)->dict:
       try:
         existingPsi = collection.find_one({"username":psi.username})
         if existingPsi :
-          raise Exceptions.Psicologo_existente()
+          raise Exceptions.usuario_existente()
   
         senha_criptografada = hashlib.sha256(psi.password.encode()).hexdigest()
         psi.password = senha_criptografada
         print(psi)
+
+        print(psi.email)
+
+        await ControllerEmail.enviarEmailConfirmacao(dict(psi))
 
         result = collection.insert_one(dict(psi))
         if not result:
           raise ValueError("Erro ao manipular usuário Psicologo")
         return {"message": status.HTTP_200_OK}
       except HTTPException:
-        raise Exceptions.Psicologo_existente()
+        raise Exceptions.usuario_existente()
       except ValueError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Erro ao manipular usuário")
