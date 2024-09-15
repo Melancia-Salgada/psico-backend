@@ -138,13 +138,13 @@ class ControllerUser:
             print(query)
             campos = [
                         "username",
-                        "pokename",
-                        "pokeid",
-                        "poketype",
-                        "cep",
-                        "logradouro",
-                        "bairro",
-                        "estado"
+                        "password",
+                        "phonenumber",
+                        "email",
+                        "CRP",
+                        "CPF",
+                        "tipo",
+                        "status"
                       ]
 
             camposAtualizados = {}
