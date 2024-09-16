@@ -50,9 +50,9 @@ async def excluirUsuarios(username:str, Authorization: Annotated[Header, Depends
 async def CreatePsi(psi:Psicologo):
      return await ControllerUser.obterCodigoConfirmacao(psi)
 
-@userAPI.post("/novo-psicologo", tags=["cadastro"])
-async def CreatePsi(psi:Psicologo):
-     return await ControllerUser.obterCodigoConfirmacao(psi)
+@userAPI.post("/novo-psicologo/{codigo}", tags=["cadastro"])
+async def CreatePsi(psi:Psicologo,codigo):
+     return await ControllerUser.insertPsi(psi,codigo)
 
 
 @userAPI.get("/listar-psicologos-pendentes", tags=["cadastro"])

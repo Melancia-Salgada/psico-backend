@@ -11,9 +11,14 @@ connection_string = "mongodb://localhost:27017/"
 database_name = "easypsi"
 collection_name = "usuarios"
 
+collection_name_codigo = "codigo_login"
+
 # Criando uma conexão com o MongoDB
 db = create_mongodb_connection(connection_string, database_name)
 collection = db[collection_name] #todas as operações de usuarios podem usar essa collection
+
+collection_codigo = db[collection_name_codigo] #todas as operações de usuarios podem usar essa collection
+
 
 class ControllerUser:
     codigo_login = ""
@@ -43,6 +48,55 @@ class ControllerUser:
 
     
     @staticmethod
+    async def obterCodigoConfirmacao(psi:Psicologo):
+       
+      try:
+        codigo_confirmacao = await ControllerEmail.enviarEmailConfirmacao(dict(psi))
+        ControllerUser.codigo_login = codigo_confirmacao
+        result = collection_codigo.insert_one({"codigo":codigo_confirmacao})
+        return psi
+
+      except Exception:
+         raise Exceptions.erro_email()
+       
+
+
+    @staticmethod 
+    async def insertPsi(psi:Psicologo, codigo_digitado:str)->dict: #
+      try:
+        #existingPsi = collection.find_one({"username":psi.username})
+        #if existingPsi :
+          #raise Exceptions.usuario_existente()
+  
+        senha_criptografada = hashlib.sha256(psi.password.encode()).hexdigest()
+        psi.password = senha_criptografada
+        print(psi)
+
+        
+        #codigo_confirmacao = await ControllerEmail.enviarEmailConfirmacao(dict(psi))
+        busca_codigo  = collection_codigo.find_one({"codigo":codigo_digitado})
+        print(busca_codigo)
+        if busca_codigo == None :
+             raise ValueError("Código incorreto. Por favor digite novamente")
+        
+        if busca_codigo :
+          result = collection.insert_one(dict(psi))
+
+          deleta_codigo = collection_codigo.find_one_and_delete({"codigo":codigo_digitado})
+        
+          if not result:
+            raise ValueError("Erro ao manipular usuário Psicologo")
+          
+          
+        return {"message": status.HTTP_200_OK}
+      except HTTPException:
+        raise Exceptions.usuario_existente()
+      except ValueError as e:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.args[0])
+      
+
+    
+    @staticmethod
     def insertUserAdmin(adm:Admin)->dict:
       try:
         existingUser = collection.find_one({"username":adm.username})
@@ -61,13 +115,8 @@ class ControllerUser:
         raise Exceptions.usuario_existente()
       except ValueError:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Erro ao manipular usuário")
-      
 
       
-     
-      
-      
-    
     @staticmethod
     def getAllUsers():
         try:
@@ -97,6 +146,15 @@ class ControllerUser:
           return {"users": users}
         except Exception:
          raise Exceptions.erro_manipular_usuario()
+        
+    @staticmethod
+    def aprovarPsi(CPF : str):
+      collection.update_one({"CPF" : CPF}, {"$set" : {"status" : "aprovado"}})
+
+    @staticmethod
+    def desaprovarPsi(CPF : str):
+      collection.update_one({"CPF" : CPF}, {"$set" : {"status" : "cancelado"}})
+            
 
     @staticmethod
     def getUser(username):
@@ -164,15 +222,7 @@ class ControllerUser:
                 raise Exceptions.erro_manipular_usuario()
         except Exception:
             raise Exceptions.erro_manipular_usuario()
-          
-    @staticmethod
-    def aprovarPsi(CPF : str):
-      collection.update_one({"CPF" : CPF}, {"$set" : {"status" : "aprovado"}})
-
-    @staticmethod
-    def desaprovarPsi(CPF : str):
-      collection.update_one({"CPF" : CPF}, {"$set" : {"status" : "cancelado"}})
-            
+    
             
     @staticmethod
     def update_user_senha(user_data):
@@ -206,38 +256,4 @@ class ControllerUser:
       except Exception:
         raise Exceptions.erro_manipular_usuario()
       
-    @staticmethod
-    async def obterCodigoConfirmacao(psi:Psicologo):
-       
-      try:
-        codigo_confirmacao = await ControllerEmail.enviarEmailConfirmacao(dict(psi))
-        ControllerUser.codigo_login = codigo_confirmacao
-        return codigo_confirmacao
-
-      except Exception:
-         raise Exceptions.erro_email()
-       
-
-
-    @staticmethod 
-    async def insertPsi(psi:Psicologo, codigo_digitado:str)->dict:
-      try:
-        #existingPsi = collection.find_one({"username":psi.username})
-        #if existingPsi :
-          #raise Exceptions.usuario_existente()
-  
-        senha_criptografada = hashlib.sha256(psi.password.encode()).hexdigest()
-        psi.password = senha_criptografada
-        print(psi)
-
-        
-        #codigo_confirmacao = await ControllerEmail.enviarEmailConfirmacao(dict(psi))
-        if(codigo_digitado == ControllerUser) :
-          result = collection.insert_one(dict(psi))
-          if not result:
-            raise ValueError("Erro ao manipular usuário Psicologo")
-        return {"message": status.HTTP_200_OK}
-      except HTTPException:
-        raise Exceptions.usuario_existente()
-      except ValueError:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Erro ao manipular usuário")
+    

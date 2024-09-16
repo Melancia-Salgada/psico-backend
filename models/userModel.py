@@ -15,7 +15,7 @@ class Psicologo(BaseModel):
     CPF:str
     tipo: str |None = "Psicólogo"
     status: str | None = "pendente"
-    codigo_login: str |None = None
+   
 
 
 
