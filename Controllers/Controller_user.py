@@ -168,6 +168,11 @@ class ControllerUser:
     @staticmethod
     def aprovarPsi(CPF : str):
       collection.update_one({"CPF" : CPF}, {"$set" : {"status" : "aprovado"}})
+
+    @staticmethod
+    def desaprovarPsi(CPF : str):
+      collection.update_one({"CPF" : CPF}, {"$set" : {"status" : "cancelado"}})
+            
             
     @staticmethod
     def update_user_senha(user_data):

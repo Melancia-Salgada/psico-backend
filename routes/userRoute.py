@@ -65,6 +65,10 @@ async def listarUsuariosPendentes(Authorization: Annotated[Header, Depends(valid
 async def aprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_token_admin)]
      return ControllerUser.aprovarPsi(CPF)
 
+@userAPI.patch("/desaprovar-psicologo/{CPF}", tags=["usuarios"]) 
+async def aprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_token_admin)]
+     return ControllerUser.desaprovarPsi(CPF)
+
 
 
 app.include_router(userAPI)
