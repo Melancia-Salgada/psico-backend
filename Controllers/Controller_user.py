@@ -4,7 +4,12 @@ import hashlib
 from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
 from services.Email import ControllerEmail
-import logging
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+from googleapiclient.discovery import build
+import hashlib
+
+SCOPES = ['https://www.googleapis.com/auth/calendar']
 
 # Configurações de conexão com o MongoDB
 connection_string = "mongodb://localhost:27017/"
@@ -87,12 +92,43 @@ class ControllerUser:
           if not result:
             raise ValueError("Erro ao manipular usuário Psicologo")
           
-          
+           # Após inserir no banco, cria a agenda no Google Calendar
+          calendar_id = await ControllerUser.create_google_calendar(psi)
+                
+          # Salva o ID da agenda no banco de dados
+          collection.update_one(
+              {"_id": result.inserted_id},
+              {"$set": {"google_calendar_id": calendar_id}}
+          )
+
         return {"message": status.HTTP_200_OK}
       except HTTPException:
         raise Exceptions.usuario_existente()
       except ValueError as e:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=e.args[0])
+      
+
+    @staticmethod
+    async def create_google_calendar(psi: Psicologo):
+        """Cria uma nova agenda no Google Calendar para o psicólogo"""
+        # Realiza o fluxo OAuth 2.0 para autenticação do Google
+        flow = InstalledAppFlow.from_client_secrets_file(
+            'client_secret.json', SCOPES)  # O arquivo JSON deve conter suas credenciais do Google API
+        credentials = flow.run_local_server(port=0)  # Abre a autenticação no navegador
+
+        # Constrói o serviço da API Calendar
+        service = build('calendar', 'v3', credentials=credentials)
+
+        # Cria a nova agenda
+        calendar = {
+            'summary': f'Agenda do Psicólogo {psi.username}',
+            'timeZone': 'America/Sao_Paulo'
+        }
+
+        created_calendar = service.calendars().insert(body=calendar).execute()
+
+        # Retorna o ID da nova agenda criada
+        return created_calendar['id']
       
 
     

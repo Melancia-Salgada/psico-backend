@@ -8,7 +8,35 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
+SCOPES = ["https://www.googleapis.com/auth/calendar"]
+
+class GoogleCalendar:
+    
+    def __init__(self):
+        self.creds = None
+        self.SCOPES = ["https://www.googleapis.com/auth/calendar"]
+        self.token_path = "././token.json"
+        self.credentials_path = "credentials.json"
+
+    def auth_api(self):
+        if os.path.exists(self.token_path):
+            self.creds = Credentials.from_authorized_user_file(self.token_path, self.SCOPES)
+        
+        if not self.creds or not self.creds.valid:
+            if self.creds and self.creds.expired and self.creds.refresh_token:
+                try:
+                    self.creds.refresh(Request())
+                except Exception as e:
+                    print(f"Error refreshing token: {e}")
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file(self.credentials_path, self.SCOPES)
+                self.creds = flow.run_local_server(port=0)
+            
+            with open(self.token_path, "w") as token:
+                token.write(self.creds.to_json())
+
+        self.service = build("calendar", "v3", credentials=self.creds)
+
 
 
 def main():
