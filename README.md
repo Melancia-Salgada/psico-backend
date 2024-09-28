@@ -34,7 +34,7 @@ fastapi_env\Scripts\activate
 3. Digite cada comando a seguir num terminal diferente.
 
 ```bash
-uvicorn routes.{Nome da rota}:app --reload --port 8000
+uvicorn routes.{Nome da rota}:app --reload --port {Numero da porta}
 
 ```
 
