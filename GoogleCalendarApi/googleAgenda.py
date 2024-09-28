@@ -8,6 +8,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from models.agendamentoModel import Agendamento
 from fastapi import HTTPException,status
+from Controllers.Controller_user import ControllerUser
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = [
@@ -45,7 +46,7 @@ class GoogleCalendar:
         self.service = build("calendar", "v3", credentials=self.creds)
 
 
-    def insert_event(self, evento: Agendamento):
+    def insert_event(self, evento: Agendamento, psicologo_logado: dict):
         nome = evento.nome
         descricao = evento.descricao
         data = evento.data
@@ -82,7 +83,7 @@ class GoogleCalendar:
             print("chegou aqui")
             print("olha o evento:", event)
 
-            created_event = self.service.events().insert(calendarId='27fb68b7641975ddaee64d9b7b8b38faf637235546d5fa805d6a7c710bb95301@group.calendar.google.com', body=event).execute()
+            created_event = self.service.events().insert(calendarId=self.retornar_psicologo(psicologo_logado), body=event).execute()
             print('Event created:', created_event.get('htmlLink'))
             return 200
             
@@ -116,6 +117,11 @@ class GoogleCalendar:
         except Exception as e:
           print(f"Erro ao formatar a data: {e}")
           raise e
+        
+    def retornar_psicologo(psicologo_logado: dict):
+        psi = ControllerUser.getSingleUser(psicologo_logado["email"])
+        return psi["google_calendar_id"]
+        
           
     def listar_calendarios(self):
       try:
@@ -128,10 +134,10 @@ class GoogleCalendar:
           print(f"An error occurred: {error}")
 
 
-def main():
-  """Shows basic usage of the Google Calendar API.
+"""def main():
+  Shows basic usage of the Google Calendar API.
   Prints the start and name of the next 10 events on the user's calendar.
-  """
+  
   creds = None
   # The file token.json stores the user's access and refresh tokens, and is
   # created automatically when the authorization flow completes for the first
@@ -184,4 +190,4 @@ def main():
 
 
 if __name__ == "__main__":
-  main()
+  main()"""
