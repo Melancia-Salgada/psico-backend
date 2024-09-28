@@ -23,7 +23,7 @@ async def createUserAdmin(adm:Admin, Authorization: Annotated[Header, Depends(va
      return ControllerUser.insertUser(adm)
 
 @userAPI.get("/listar-usuarios", tags=["usuarios"])
-async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token_admin)]):
+async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token)]):
      print(Authorization)
      return ControllerUser.getAllUsers()
 

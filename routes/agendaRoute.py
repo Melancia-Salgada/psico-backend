@@ -1,5 +1,5 @@
 from fastapi import APIRouter, Depends, FastAPI,Header,Query
-from routes.loginRoute import validar_token, validar_token_admin, validar_token_dados
+from routes.loginRoute import validar_token, validar_token_admin
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer
@@ -18,13 +18,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @agendaAPI.post("/novo-agendamento", tags=["agendamentos"])
-async def createAgendamento(evento:Agendamento,Authorization: Annotated[Header, Depends(validar_token)]):
+async def createAgendamento(Authorization: Annotated[Header, Depends(validar_token)]):
     controller = GoogleCalendar()
-    print(Authorization)
-    psicologo_logado = await validar_token_dados(Authorization)
-    print(psicologo_logado)
-    return controller.insert_event(evento, psicologo_logado)
+    return controller.listar_calendarios()
+    #return controller.insert_event(evento, psicologo_logado)
 
 @agendaAPI.get("/listar-agendas", tags=["agendamentos"])
 async def listarAgendas(Authorization: Annotated[Header, Depends(validar_token)]):

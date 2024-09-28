@@ -41,14 +41,7 @@ class Admin(BaseModel):
     tipo: str |None = "Administrador"
 
 
-#usuário padrão do banco
-usuario_admin = {
-  "username": "system",
-  "password": "admin123",
-  "phonenumber": "11988655418",
-  "email": "devslindos@outlook.com",
-  "tipo":"Administrador"
-}
+
 
   
 
