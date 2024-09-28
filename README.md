@@ -1,4 +1,4 @@
-# <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Pok%C3%A9_Ball_icon.svg/512px-Pok%C3%A9_Ball_icon.svg.png?20161023215848" width="32" height="32" alt="Pokebola"> PokeCEP 
+# EasyPsi 
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 > A aplicação permite login, busca de dados de Pokémon e endereço via APIs, cadastro e listagem no backend FastAPI, com opções de editar e excluir, e usa cache para reduzir requisições repetidas.
 
@@ -34,8 +34,7 @@ fastapi_env\Scripts\activate
 3. Digite cada comando a seguir num terminal diferente.
 
 ```bash
-uvicorn routes.loginRoute:app --reload --port 8000
-uvicorn routes.userRoute:app --reload --port 8001
+uvicorn routes.{Nome da rota}:app --reload --port 8000
 
 ```
 
@@ -61,6 +60,6 @@ npm start
 ```bash
 mongodb://localhost:27017
 ```
-2. Crie um banco chamando "pokcafe_db"
-3. Dentro do banco crie as collection: "users"
+2. Crie um banco chamando "easypsi".
+3. Dentro do banco crie as collection.
 
