@@ -7,7 +7,6 @@ from models.userModel import User,Psicologo,Admin
 from models.agendamentoModel import Agendamento
 from GoogleCalendarApi.googleAgenda import GoogleCalendar
 
-
 app = FastAPI()
 agendaAPI = APIRouter()
 

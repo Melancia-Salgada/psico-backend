@@ -10,15 +10,20 @@ from models.agendamentoModel import Agendamento
 from fastapi import HTTPException,status
 
 # If modifying these scopes, delete the file token.json.
-SCOPES = ["https://www.googleapis.com/auth/calendar"]
+SCOPES = [
+    "https://www.googleapis.com/auth/calendar",
+    "https://www.googleapis.com/auth/calendar.events",
+    "https://www.googleapis.com/auth/calendar.readonly"
+]
+
 
 class GoogleCalendar:
     
     def __init__(self):
         self.creds = None
-        self.SCOPES = ["https://www.googleapis.com/auth/calendar"]
+        self.SCOPES = SCOPES
         self.token_path = "././token.json"
-        self.credentials_path = "credentials.json"
+        self.credentials_path = "././credentials.json"
 
     def auth_api(self):
         if os.path.exists(self.token_path):
@@ -75,9 +80,11 @@ class GoogleCalendar:
                 },
             }
             print("chegou aqui")
+            print("olha o evento:", event)
 
-            created_event = self.service.events().insert(calendarId='sixdevsfatec@gmail.com', body=event).execute()
+            created_event = self.service.events().insert(calendarId='27fb68b7641975ddaee64d9b7b8b38faf637235546d5fa805d6a7c710bb95301@group.calendar.google.com', body=event).execute()
             print('Event created:', created_event.get('htmlLink'))
+            return 200
             
             """if ControllerCliente.getClienteAgendamento(email_convidado):
                 
@@ -86,7 +93,7 @@ class GoogleCalendar:
                 copia_agendamento["id"] = created_event['id']
                 controller_agendamento = Controller_Copia_Agendamento()
                 controller_agendamento.inserir_agendamento(copia_agendamento)
-                return 200
+                
             else:
                 raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="cliente não encontrado nos registros do sistema")"""
 
@@ -96,19 +103,29 @@ class GoogleCalendar:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"erro ao criar evento: {str(erro)}")
 
     def formatar_data(self, data: str):
-        #try:
+        try:
             data_atual = data.split("-")
             print(data_atual)
-            dia = data_atual[2]
+            dia = data_atual[0]
             mes = data_atual[1]
-            ano = data_atual[0]
+            ano = data_atual[2]
             data_format_final = f"{ano}-{mes}-{dia}"
             
             return data_format_final
     
-        #except:
-            #raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="Erro ao encontrar data para agendamento")
-
+        except Exception as e:
+          print(f"Erro ao formatar a data: {e}")
+          raise e
+          
+    def listar_calendarios(self):
+      try:
+          self.auth_api()
+          # List all calendars
+          calendar_list = self.service.calendarList().list().execute()
+          for calendar in calendar_list['items']:
+              print(f"Calendar Summary: {calendar['summary']}, Calendar ID: {calendar['id']}")
+      except HttpError as error:
+          print(f"An error occurred: {error}")
 
 
 def main():
