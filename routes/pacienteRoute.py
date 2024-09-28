@@ -17,12 +17,22 @@ app.add_middleware(
 )
 
 
+#Rota de teste, nao colocar em producao pf
+@pacienteAPI.post('/novo-paciente', tags=["usuarios"])
+async def createPaciente(paciente : Paciente):
+     return await ControllerUser.insertPacienteTest(paciente)
+
 @pacienteAPI.get("/todos-pacientes", tags=["usuarios"])
 async def listarPacientes():
      return ControllerUser.getAllPacientes()
 
-@pacienteAPI.patch("/atualizar-paciente/{nomeCompleto}")
+@pacienteAPI.patch("/atualizar-paciente/{nomeCompleto}", tags="usuarios")
 async def atualizarPaciente(nomeCompleto:str, paciente:Paciente):
      return ControllerUser.updatePaciente(dict(paciente), nomeCompleto)
+
+@pacienteAPI.patch("/desativar-paciente", tags= "usuarios")
+async def desativarPaciente(paciente : Paciente):
+     ControllerUser.desativarPaciente(paciente)
+     
 
 app.include_router(pacienteAPI)
