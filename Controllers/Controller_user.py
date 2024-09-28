@@ -172,8 +172,19 @@ class ControllerUser:
           return {"users": users}
         except Exception:
          raise Exceptions.erro_manipular_usuario()
+       
+    @staticmethod
+    def getAllPacientes():
+      try: 
+        pacientes = [pc for pc in collection.find({"tipo" : "paciente"})]
         
-
+        for pc in pacientes:
+          pc["_id"] = str(pc["_id"])
+        
+        return {"Pacientes" : pacientes}
+      except Exception:
+        raise Exceptions.erro_manipular_cliente
+        
     @staticmethod
     def getAllUsersPendentes():
         try:

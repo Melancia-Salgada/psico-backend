@@ -74,6 +74,14 @@ async def aprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_tok
 async def aprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_token_admin)]
      return ControllerUser.desaprovarPsi(CPF)
 
-
+@userAPI.get("/todos-usuarios", tags=["usuarios"])
+paciente1 = Paciente(
+    nomePaciente="Maria Oliveira",
+    sexoPaciente="Feminino",
+    phonenumber="987654321",
+    idade=32,
+    grupo="Grupo de risco",
+    observ="Alergia a penicilina"
+)
 
 app.include_router(userAPI)
