@@ -2,7 +2,7 @@ from fastapi import APIRouter, FastAPI, Depends,Header
 from routes.loginRoute import validar_token, validar_token_admin
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
-from models.userModel import User,Psicologo,Admin
+from models.userModel import Paciente, User,Psicologo,Admin
 #importando controllers
 from Controllers.Controller_user import ControllerUser
 from services.Email import email24Depois
@@ -21,6 +21,11 @@ app.add_middleware(
 @userAPI.post("/novo-usuario-admin", tags=["usuarios"])
 async def createUserAdmin(adm:Admin, Authorization: Annotated[Header, Depends(validar_token_admin)]): # 
      return ControllerUser.insertUser(adm)
+
+#Rota de teste, nao colocar em producao pf
+@userAPI.post('novo-paciente', tags=["usuarios"])
+async def createPaciente(paciente : Paciente):
+     return ControllerUser.insertPacienteTest(paciente)
 
 @userAPI.get("/listar-usuarios", tags=["usuarios"])
 async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token_admin)]):
