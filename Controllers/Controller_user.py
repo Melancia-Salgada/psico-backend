@@ -64,7 +64,13 @@ class ControllerUser:
       except Exception:
          raise Exceptions.erro_email()
        
-
+    #SOMENTE PARA TESTE NAO UTILIZAR EM PRODUCAO
+    @staticmethod
+    async def insertPsiTest(psi:Psicologo) -> dict:
+      collection.insert_one(dict(psi))
+      return {"message: " : status.HTTP_201_CREATED}
+      
+    
 
     @staticmethod 
     async def insertPsi(psi:Psicologo, codigo_digitado:str)->dict: #
@@ -172,7 +178,7 @@ class ControllerUser:
     def getAllUsersPendentes():
         try:
       # Obtendo todos os documentos da coleção como uma lista de dicionários
-          users = [psi for psi in collection.find({"status": {"$exists": True, "$eq": "pendente"}})]
+          users = [psi for psi in collection.find({"status": {"$exists": True, "$eq": "Pendente"}})]
       # pega cada elemento da collection e armazena na lista
 
         # Convertendo o campo '_id' para uma string em cada documento, é necessário para retornar 
