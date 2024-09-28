@@ -23,7 +23,7 @@ async def createUserAdmin(adm:Admin, Authorization: Annotated[Header, Depends(va
      return ControllerUser.insertUser(adm)
 
 #Rota de teste, nao colocar em producao pf
-@userAPI.post('novo-paciente', tags=["usuarios"])
+@userAPI.post('/novo-paciente', tags=["usuarios"])
 async def createPaciente(paciente : Paciente):
      return ControllerUser.insertPacienteTest(paciente)
 
