@@ -74,8 +74,6 @@ async def aprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_tok
 async def aprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_token_admin)]
      return ControllerUser.desaprovarPsi(CPF)
 
-@userAPI.get("/todos-pacientes", tags=["usuarios"])
-async def listarPacientes():
-     return ControllerUser.getAllPacientes()
+
 
 app.include_router(userAPI)
