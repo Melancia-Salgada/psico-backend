@@ -28,7 +28,7 @@ async def createPaciente(paciente : Paciente):
      return await ControllerUser.insertPacienteTest(paciente)
 
 @userAPI.get("/listar-usuarios", tags=["usuarios"])
-async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token_admin)]):
+async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token)]):
      print(Authorization)
      return ControllerUser.getAllUsers()
 
