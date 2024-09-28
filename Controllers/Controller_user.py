@@ -180,7 +180,7 @@ class ControllerUser:
     @staticmethod
     def getAllPacientes():
       try: 
-        pacientes = [pc for pc in collection.find({"tipo" : "paciente"})]
+        pacientes = [pc for pc in collection.find({"tipo" : "Paciente"})]
         
         for pc in pacientes:
           pc["_id"] = str(pc["_id"])
