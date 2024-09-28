@@ -1,5 +1,5 @@
 from configs.db import create_mongodb_connection
-from models.userModel import User, Psicologo,Admin
+from models.userModel import Paciente, User, Psicologo,Admin
 import hashlib
 from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
@@ -69,6 +69,10 @@ class ControllerUser:
     async def insertPsiTest(psi:Psicologo) -> dict:
       collection.insert_one(dict(psi))
       return {"message: " : status.HTTP_201_CREATED}
+    
+    async def insertPacienteTest(paciente : Paciente) -> dict:
+      collection.insert_one(dict(paciente))
+      return {"SE DER 'CREATED' GOSTA DE ARIANA GRANDE: " : status.HTTP_201_CREATED}
       
     
 
