@@ -14,7 +14,7 @@ class Psicologo(BaseModel):
     CRP:str
     CPF:str
     tipo: str |None = "Psicólogo"
-    status: str | None = "pendente"
+    status: str | None = "Pendente"
     
     
     
@@ -27,6 +27,7 @@ class Paciente(BaseModel):
     grupo : str 
     nomeCompletoResponsavel : str
     telefoneResponsavel : str
+    tipo : str | None = "Paciente"
 
 
 
