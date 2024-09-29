@@ -313,4 +313,37 @@ class ControllerUser:
       except Exception:
         raise Exceptions.erro_manipular_usuario()
       
-    
+    @staticmethod
+    def updatePaciente(user_data: dict, nomeCompleto:str): 
+        try:
+            print(user_data)
+            query = {"nomeCompleto": nomeCompleto}
+            print(query)
+            campos = [
+                        "nomeCompleto",
+                        "sexo",
+                        "idade",
+                        "telefone",
+                        "email",
+                        "grupo",
+                        "nomeCompletoResponsavel",
+                        "telefoneResponsavel",
+                        "tipo"
+                      ]
+
+            camposAtualizados = {}
+            for campo in campos:
+                if campo in user_data and (user_data[campo] is not None and user_data[campo] != ""):
+                    camposAtualizados[campo] = user_data[campo]
+
+            new_values = {"$set": camposAtualizados}
+            print(new_values)
+            result = collection.update_one(query, new_values)
+            print(result)
+
+            if result.modified_count > 0:
+                return {"message": "Usuário atualizado com sucesso"}
+            else:
+                raise Exceptions.erro_manipular_usuario()
+        except Exception:
+            raise Exceptions.erro_manipular_usuario()
