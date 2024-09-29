@@ -22,11 +22,6 @@ app.add_middleware(
 async def createUserAdmin(adm:Admin, Authorization: Annotated[Header, Depends(validar_token_admin)]): # 
      return ControllerUser.insertUser(adm)
 
-#Rota de teste, nao colocar em producao pf
-@userAPI.post('/novo-paciente', tags=["usuarios"])
-async def createPaciente(paciente : Paciente):
-     return await ControllerUser.insertPacienteTest(paciente)
-
 @userAPI.get("/listar-usuarios", tags=["usuarios"])
 async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token)]):
      print(Authorization)
