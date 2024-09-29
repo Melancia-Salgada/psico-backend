@@ -30,15 +30,13 @@ async def listarPacientes():
 async def atualizarPaciente(nomeCompleto:str, paciente:Paciente):
      return ControllerUser.updatePaciente(dict(paciente), nomeCompleto)
 
-<<<<<<< HEAD:routes/pacienteRoutes.py
 @pacienteAPI.get("/buscar-paciente/{email}", tags=["pacientes"])
 async def buscarPaciente(email:str):
      return ControllerUser.buscarPaciente(email)
-=======
+
 @pacienteAPI.patch("/desativar-paciente", tags= "usuarios")
 async def desativarPaciente(paciente : Paciente):
      ControllerUser.desativarPaciente(paciente)
      
->>>>>>> cc687a963fb96d6ad47d0e3094b6c2b87c18aaef:routes/pacienteRoute.py
 
 app.include_router(pacienteAPI)
