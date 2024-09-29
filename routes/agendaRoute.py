@@ -1,12 +1,10 @@
 from fastapi import APIRouter, Depends, FastAPI,Header,Query
-from routes.loginRoute import validar_token, validar_token_admin
+from routes.loginRoute import validar_token
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import OAuth2PasswordBearer
-from models.userModel import User,Psicologo,Admin
 from models.agendamentoModel import Agendamento
 from GoogleCalendarApi.googleAgenda import GoogleCalendar
-from Controllers.token import Token
+
 
 app = FastAPI()
 agendaAPI = APIRouter()
@@ -29,6 +27,16 @@ async def createAgendamento(evento:Agendamento,Authorization: Annotated[Header, 
 async def createAgendamento(Authorization: Annotated[Header, Depends(validar_token)]):
     controller = GoogleCalendar()
     return controller.listar_eventos(Authorization)
+
+@agendaAPI.patch("/atualizar-agendamentos/{eventId}")
+async def atualizarAgendamentos(eventId:str,evento: Agendamento,Authorization: Annotated[Header, Depends(validar_token)]):
+    controller = GoogleCalendar()
+    return controller.updateAgendamento(eventId, evento, Authorization)
+
+@agendaAPI.delete("/excluir-agendamento/{eventId}", tags=["agendamentos"])
+async def excluirAgendamentos(eventId:str,Authorization: Annotated[Header, Depends(validar_token)]):
+    controller = GoogleCalendar()
+    return controller.deletarAgendamento(eventId, Authorization)
 
 @agendaAPI.get("/listar-agendas", tags=["agendamentos"])
 async def listarAgendas(Authorization: Annotated[Header, Depends(validar_token)]):

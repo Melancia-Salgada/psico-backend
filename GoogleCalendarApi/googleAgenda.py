@@ -153,6 +153,7 @@ class GoogleCalendar:
             eventos_principais = []  # Lista para armazenar os dados principais
 
             for evento in eventos_lista:
+                id = evento.get('id', 'Sem título')  # ID do evento
                 nome = evento.get('summary', 'Sem título')  # Nome do evento
                 descricao = evento.get('description', 'Sem descrição')  # Descrição
                 inicio = evento['start'].get('dateTime', evento['start'].get('date'))  # Data/hora de início
@@ -165,6 +166,7 @@ class GoogleCalendar:
 
                 # Armazenando os dados principais em um dicionário
                 evento_principal = {
+                    'id':id,
                     'nome': nome,
                     'descricao': descricao,
                     'inicio': inicio_br,
@@ -204,20 +206,29 @@ class GoogleCalendar:
           event['summary'] = evento_atualizado.nome
           event['description'] = evento_atualizado.descricao
 
-          data_formatada = datetime.datetime.strptime(evento_atualizado.data, '%Y-%m-%d').strftime('%Y-%m-%d')
+          data_formatada = datetime.strptime(evento_atualizado.data, '%d-%m-%Y').strftime('%Y-%m-%d')
           event['start']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_inicio}:00"
           event['end']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_fim}:00"
           event['attendees'][0]['email'] = evento_atualizado.email_cliente
 
           self.service.events().update(calendarId= calendar_id, eventId=eventId, body=event).execute()
-          controller_copias = Controller_Copia_Agendamento()
-          controller_copias.updateAgendamento(event, eventId)
+          return status.HTTP_200_OK
           
       except HttpError as error:
-          print(f"An error occurred: {error}")
+          raise HTTPException(status_code=error.resp.status, detail=f"Ocorreu um erro ao atualizar o agendamento: {error}")
     
 
+    def deletarAgendamento(self, event_ID, psicologo_logado:dict):
+        try:
+            self.auth_api()
 
+            calendar_id = self.retornar_psicologo(psicologo_logado)
+
+            self.service.events().delete(calendarId= calendar_id, eventId=event_ID).execute()
+            return status.HTTP_200_OK
+          
+        except HttpError as error:
+          raise HTTPException(status_code=error.resp.status, detail=f"Ocorreu um erro ao deletar o agendamento: {error}")
     
 
 
