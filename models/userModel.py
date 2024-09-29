@@ -15,7 +15,18 @@ class Psicologo(BaseModel):
     CPF:str
     tipo: str |None = "Psicólogo"
     status: str | None = "pendente"
-   
+    
+    
+    
+class Paciente(BaseModel):
+    nomeCompleto : str
+    sexo : str
+    idade : int
+    telefone : str
+    email : str
+    grupo : str 
+    nomeCompletoResponsavel : str
+    telefoneResponsavel : str
 
 
 
