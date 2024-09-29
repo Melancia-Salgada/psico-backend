@@ -18,13 +18,13 @@ class LoginController:
 
             if username == usuario_admin["username"] and password == usuario_admin["password"]:
                 access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
-                token = jwt_token.create_access_token({"sub":usuario_admin["tipo"]}, access_token_expires) 
+                token = jwt_token.create_access_token({"sub":usuario_admin["tipo"], "email":usuario["email"]}, access_token_expires) 
                 return token
         
             usuario = auth.authenticate_user(username,password)
             if usuario:
                 access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
-                token = jwt_token.create_access_token({"sub":usuario["tipo"]}, access_token_expires) 
+                token = jwt_token.create_access_token({"sub":usuario["tipo"], "email":usuario["email"]}, access_token_expires) 
                 return token
             
             
