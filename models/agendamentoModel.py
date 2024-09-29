@@ -24,6 +24,7 @@ from pydantic import BaseModel
                   ],
               },
           }"""
+
 class Agendamento(BaseModel):
     id: str | None = None
     nome: str

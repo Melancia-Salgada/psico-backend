@@ -13,6 +13,7 @@ class Psicologo(BaseModel):
     email:str
     CRP:str
     CPF:str
+    CPNJ: str |None = None
     tipo: str |None = "Psicólogo"
     status: str | None = "Pendente"
     
