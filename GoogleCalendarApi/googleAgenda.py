@@ -83,7 +83,9 @@ class GoogleCalendar:
             print("chegou aqui")
             print("olha o evento:", event)
 
-            created_event = self.service.events().insert(calendarId=self.retornar_psicologo(psicologo_logado), body=event).execute()
+            id = self.retornar_psicologo(psicologo_logado)
+            
+            created_event = self.service.events().insert(calendarId=id, body=event).execute()
             print('Event created:', created_event.get('htmlLink'))
             return 200
             
@@ -118,7 +120,7 @@ class GoogleCalendar:
           print(f"Erro ao formatar a data: {e}")
           raise e
         
-    def retornar_psicologo(psicologo_logado: dict):
+    def retornar_psicologo(self,psicologo_logado: dict):
         psi = ControllerUser.getSingleUser(psicologo_logado["email"])
         return psi["google_calendar_id"]
         

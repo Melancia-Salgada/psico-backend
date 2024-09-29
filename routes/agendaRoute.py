@@ -6,6 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 from models.userModel import User,Psicologo,Admin
 from models.agendamentoModel import Agendamento
 from GoogleCalendarApi.googleAgenda import GoogleCalendar
+from Controllers.token import Token
 
 app = FastAPI()
 agendaAPI = APIRouter()
@@ -20,10 +21,9 @@ app.add_middleware(
 
 
 @agendaAPI.post("/novo-agendamento", tags=["agendamentos"])
-async def createAgendamento(Authorization: Annotated[Header, Depends(validar_token)]):
+async def createAgendamento(evento:Agendamento,Authorization: Annotated[Header, Depends(validar_token)]):
     controller = GoogleCalendar()
-    return controller.listar_calendarios()
-    #return controller.insert_event(evento, psicologo_logado)
+    return controller.insert_event(evento, Authorization)
 
 @agendaAPI.get("/listar-agendas", tags=["agendamentos"])
 async def listarAgendas(Authorization: Annotated[Header, Depends(validar_token)]):
