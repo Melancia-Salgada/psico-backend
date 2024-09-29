@@ -25,7 +25,7 @@ async def createUserAdmin(adm:Admin, Authorization: Annotated[Header, Depends(va
 #Rota de teste, nao colocar em producao pf
 @userAPI.post('/novo-paciente', tags=["usuarios"])
 async def createPaciente(paciente : Paciente):
-     return ControllerUser.insertPacienteTest(paciente)
+     return await ControllerUser.insertPacienteTest(paciente)
 
 @userAPI.get("/listar-usuarios", tags=["usuarios"])
 async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token_admin)]):
