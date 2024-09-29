@@ -1,4 +1,4 @@
-import datetime
+from datetime import datetime
 import os.path
 
 from google.auth.transport.requests import Request
@@ -83,9 +83,11 @@ class GoogleCalendar:
             print("chegou aqui")
             print("olha o evento:", event)
 
-            created_event = self.service.events().insert(calendarId=self.retornar_psicologo(psicologo_logado), body=event).execute()
+            id_calendar = self.retornar_psicologo(psicologo_logado)
+            
+            created_event = self.service.events().insert(calendarId=id_calendar, body=event).execute()
             print('Event created:', created_event.get('htmlLink'))
-            return 200
+            return status.HTTP_200_OK
             
             """if ControllerCliente.getClienteAgendamento(email_convidado):
                 
@@ -118,10 +120,10 @@ class GoogleCalendar:
           print(f"Erro ao formatar a data: {e}")
           raise e
         
-    def retornar_psicologo(psicologo_logado: dict):
+    def retornar_psicologo(self,psicologo_logado: dict):
         psi = ControllerUser.getSingleUser(psicologo_logado["email"])
         return psi["google_calendar_id"]
-        
+    
           
     def listar_calendarios(self):
       try:
@@ -132,6 +134,102 @@ class GoogleCalendar:
               print(f"Calendar Summary: {calendar['summary']}, Calendar ID: {calendar['id']}")
       except HttpError as error:
           print(f"An error occurred: {error}")
+
+
+    def listar_eventos(self, psicologo_logado: str):
+        try:
+            self.auth_api()
+
+            calendar_id = self.retornar_psicologo(psicologo_logado)
+
+            # Listando eventos do calendário
+            eventos = self.service.events().list(calendarId=calendar_id).execute()
+            eventos_lista = eventos.get('items', [])
+
+            if not eventos_lista:
+                print("Nenhum evento encontrado.")
+                return []
+
+            eventos_principais = []  # Lista para armazenar os dados principais
+
+            for evento in eventos_lista:
+                id = evento.get('id', 'Sem título')  # ID do evento
+                nome = evento.get('summary', 'Sem título')  # Nome do evento
+                descricao = evento.get('description', 'Sem descrição')  # Descrição
+                inicio = evento['start'].get('dateTime', evento['start'].get('date'))  # Data/hora de início
+                fim = evento['end'].get('dateTime', evento['end'].get('date'))  # Data/hora de fim
+                email_cliente = evento['attendees'][0]['email'] if 'attendees' in evento and evento['attendees'] else 'Sem e-mail'  # Email do cliente
+
+                # Converter o início e fim para o formato brasileiro
+                inicio_br = self.formatar_data_hora(inicio)
+                fim_br = self.formatar_data_hora(fim)
+
+                # Armazenando os dados principais em um dicionário
+                evento_principal = {
+                    'id':id,
+                    'nome': nome,
+                    'descricao': descricao,
+                    'inicio': inicio_br,
+                    'fim': fim_br,
+                    'email_cliente': email_cliente
+                }
+
+                eventos_principais.append(evento_principal)
+
+            # Retornar apenas os dados principais
+            return eventos_principais
+
+        except HttpError as error:
+            raise HTTPException(status_code=error.resp.status, detail=f"Ocorreu um erro ao listar eventos: {error}")
+        except Exception as erro:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno: {str(erro)}")
+        
+
+    def formatar_data_hora(self, data_hora: str):
+        try:
+            # Converter string ISO 8601 para objeto datetime
+            data_hora_obj = datetime.fromisoformat(data_hora)
+            # Formatar para o padrão brasileiro (DD/MM/YYYY HH:MM)
+            data_hora_br = data_hora_obj.strftime("%d/%m/%Y %H:%M")
+            return data_hora_br
+        except Exception as e:
+            print(f"Erro ao formatar data e hora: {e}")
+            return data_hora  # Retorna a string original em caso de erro
+
+    def updateAgendamento(self, eventId: str, evento_atualizado: Agendamento, psicologo_logado:dict):
+      try:
+          self.auth_api()
+
+          calendar_id = self.retornar_psicologo(psicologo_logado)
+
+          event = self.service.events().get(calendarId= calendar_id, eventId=eventId).execute()
+          event['summary'] = evento_atualizado.nome
+          event['description'] = evento_atualizado.descricao
+
+          data_formatada = datetime.strptime(evento_atualizado.data, '%d-%m-%Y').strftime('%Y-%m-%d')
+          event['start']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_inicio}:00"
+          event['end']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_fim}:00"
+          event['attendees'][0]['email'] = evento_atualizado.email_cliente
+
+          self.service.events().update(calendarId= calendar_id, eventId=eventId, body=event).execute()
+          return status.HTTP_200_OK
+          
+      except HttpError as error:
+          raise HTTPException(status_code=error.resp.status, detail=f"Ocorreu um erro ao atualizar o agendamento: {error}")
+    
+
+    def deletarAgendamento(self, event_ID, psicologo_logado:dict):
+        try:
+            self.auth_api()
+
+            calendar_id = self.retornar_psicologo(psicologo_logado)
+
+            self.service.events().delete(calendarId= calendar_id, eventId=event_ID).execute()
+            return status.HTTP_200_OK
+          
+        except HttpError as error:
+          raise HTTPException(status_code=error.resp.status, detail=f"Ocorreu um erro ao deletar o agendamento: {error}")
+    
 
 
 """def main():

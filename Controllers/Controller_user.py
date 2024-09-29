@@ -75,7 +75,7 @@ class ControllerUser:
     
     async def insertPacienteTest(paciente : Paciente) -> dict:
       collection.insert_one(dict(paciente))
-      return {"SE DER 'CREATED' GOSTA DE ARIANA GRANDE: " : status.HTTP_201_CREATED}
+      return {"SE DER '201' TÁ QUERENDO: " : status.HTTP_201_CREATED}
       
     
 
@@ -315,6 +315,14 @@ class ControllerUser:
             raise Exceptions.erro_manipular_usuario()
       except Exception:
         raise Exceptions.erro_manipular_usuario()
+      
+    @staticmethod
+    def desativarPaciente(paciente : Paciente): 
+      try:
+        collection.update_one({"nomeCompleto" : paciente.nomeCompleto}, {"$set" : {"status" : "Inativo"}})  
+        return {"Sucesso: " : "Paciente desativado"}
+      except Exception: 
+        raise Exceptions.erro_manipular_cliente()
       
     @staticmethod
     def updatePaciente(user_data: dict, nomeCompleto:str): 
