@@ -16,6 +16,8 @@ connection_string = "mongodb://localhost:27017/"
 database_name = "easypsi"
 collection_name = "usuarios"
 
+collection_nome_paciente = "paciente"
+
 collection_name_codigo = "codigo_login"
 
 # Criando uma conexão com o MongoDB
@@ -24,6 +26,7 @@ collection = db[collection_name] #todas as operações de usuarios podem usar es
 
 collection_codigo = db[collection_name_codigo] #todas as operações de usuarios podem usar essa collection
 
+collection_paciente = db[collection_nome_paciente]
 
 class ControllerUser:
     codigo_login = ""
@@ -347,3 +350,13 @@ class ControllerUser:
                 raise Exceptions.erro_manipular_usuario()
         except Exception:
             raise Exceptions.erro_manipular_usuario()
+        
+    @staticmethod
+    def buscarPaciente(email:str):
+          try:
+              paciente = collection_paciente.find_one({"email": email})
+              return paciente
+          except Exception:
+            raise Exceptions.erro_manipular_usuario()
+        
+        

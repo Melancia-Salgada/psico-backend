@@ -25,4 +25,8 @@ async def listarPacientes():
 async def atualizarPaciente(nomeCompleto:str, paciente:Paciente):
      return ControllerUser.updatePaciente(dict(paciente), nomeCompleto)
 
+@pacienteAPI.get("/buscar-paciente/{email}", tags=["pacientes"])
+async def buscarPaciente(email:str):
+     return ControllerUser.buscarPaciente(email)
+
 app.include_router(pacienteAPI)
