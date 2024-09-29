@@ -25,6 +25,11 @@ async def createAgendamento(evento:Agendamento,Authorization: Annotated[Header, 
     controller = GoogleCalendar()
     return controller.insert_event(evento, Authorization)
 
+@agendaAPI.get("/listar-agendamentos", tags=["agendamentos"])
+async def createAgendamento(Authorization: Annotated[Header, Depends(validar_token)]):
+    controller = GoogleCalendar()
+    return controller.listar_eventos(Authorization)
+
 @agendaAPI.get("/listar-agendas", tags=["agendamentos"])
 async def listarAgendas(Authorization: Annotated[Header, Depends(validar_token)]):
     controller = GoogleCalendar()
