@@ -37,7 +37,7 @@ async def editarUsuario(username:str, Authorization: Annotated[Header, Depends(v
      return user # para carregar os dados do usuário encontrado na página de atualizar dados
 
 @userAPI.patch("/atualizar-usuario/{username}", tags=["usuarios"]) 
-async def atualizarUsuario(user:User, username): #Authorization: Annotated[Header, Depends(validar_token)]
+async def atualizarUsuario(user:User, username ,Authorization: Annotated[Header, Depends(validar_token)]):
      return ControllerUser.updateUser(dict(user), username)
 
 @userAPI.delete("/deletar-usuario/{username}", tags=["usuarios"])
@@ -54,15 +54,10 @@ async def CreatePsi(psi:Psicologo):
 async def CreatePsi(psi:Psicologo,codigo):
      return await ControllerUser.insertPsi(psi,codigo)
 
-#Metodo somente para TESTE, nao utilizar para producao
-@userAPI.post("/novo-psicologo", tags=["cadastro"])
-async def CreatePsi(psi:Psicologo):
-     return await ControllerUser.insertPsiTest(psi)
-
 
 @userAPI.get("/listar-psicologos-pendentes", tags=["cadastro"])
-async def listarUsuariosPendentes(): #Authorization: Annotated[Header, Depends(validar_token_admin)]
-     #print(Authorization)
+async def listarUsuariosPendentes(Authorization: Annotated[Header, Depends(validar_token_admin)]):
+     print(Authorization)
      return ControllerUser.getAllUsersPendentes()
 
 
@@ -74,14 +69,8 @@ async def aprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_tok
 async def aprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_token_admin)]
      return ControllerUser.desaprovarPsi(CPF)
 
-@userAPI.get("/todos-usuarios", tags=["usuarios"])
-paciente1 = Paciente(
-    nomePaciente="Maria Oliveira",
-    sexoPaciente="Feminino",
-    phonenumber="987654321",
-    idade=32,
-    grupo="Grupo de risco",
-    observ="Alergia a penicilina"
-)
+@userAPI.get("/todos-pacientes", tags=["usuarios"])
+async def listarPacientes():
+     return ControllerUser.getAllPacientes()
 
 app.include_router(userAPI)
