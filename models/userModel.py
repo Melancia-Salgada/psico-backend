@@ -41,6 +41,20 @@ class Admin(BaseModel):
     tipo: str |None = "Administrador"
 
 
+usuario_admin = Admin(
+    username="system",
+    password="admin123",
+    phonenumber="1234567890",  # Substitua pelo número real
+    email="system@example.com",  # Substitua pelo email real
+    CPF="123.456.789-00"  # Substitua pelo CPF real
+)
+
+# Convertendo para JSON
+usuario_admin_json = dict(usuario_admin)
+print(usuario_admin_json)
+
+
+
 
 
   

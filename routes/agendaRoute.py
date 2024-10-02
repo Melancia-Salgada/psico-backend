@@ -28,7 +28,7 @@ async def createAgendamento(Authorization: Annotated[Header, Depends(validar_tok
     controller = GoogleCalendar()
     return controller.listar_eventos(Authorization)
 
-@agendaAPI.patch("/atualizar-agendamentos/{eventId}")
+@agendaAPI.patch("/atualizar-agendamento/{eventId}")
 async def atualizarAgendamentos(eventId:str,evento: Agendamento,Authorization: Annotated[Header, Depends(validar_token)]):
     controller = GoogleCalendar()
     return controller.updateAgendamento(eventId, evento, Authorization)
