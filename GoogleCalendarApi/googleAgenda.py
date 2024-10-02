@@ -58,8 +58,20 @@ class GoogleCalendar:
         data  = self.formatar_data(data)
         print(data)
 
+        
+
         try:
             self.auth_api()
+
+            client = meet_v2.SpacesServiceClient(credentials=self.creds)
+            request = meet_v2.CreateSpaceRequest()
+            response = client.create_space(request=request)
+            link_meet = response.meeting_uri
+            print(type(response.meeting_uri))
+            descricao = descricao+ " |  "+link_meet
+
+           
+
             event = {
                 'summary': nome,
                 'description': descricao,
@@ -90,10 +102,7 @@ class GoogleCalendar:
             created_event = self.service.events().insert(calendarId=id_calendar, body=event).execute()
             print('Event created:', created_event.get('htmlLink'))
 
-            client = meet_v2.SpacesServiceClient(credentials=self.creds)
-            request = meet_v2.CreateSpaceRequest()
-            response = client.create_space(request=request)
-            print("\n Link da meet:",response.meeting_uri)
+            
 
             return status.HTTP_200_OK
             
