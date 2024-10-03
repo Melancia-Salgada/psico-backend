@@ -16,21 +16,6 @@ class Psicologo(BaseModel):
     CPNJ: str |None = None
     tipo: str |None = "Psicólogo"
     status: str | None = "Pendente"
-    
-    
-    
-class Paciente(BaseModel):
-    nomeCompleto : str
-    sexo : str
-    idade : int
-    telefone : str
-    email : str
-    grupo : str 
-    nomeCompletoResponsavel : str
-    telefoneResponsavel : str
-    tipo : str | None = "Paciente"
-
-
 
 class Admin(BaseModel): 
     username: str

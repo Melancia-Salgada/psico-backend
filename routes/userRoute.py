@@ -1,4 +1,4 @@
-from fastapi import APIRouter, FastAPI, Depends,Header
+from fastapi import APIRouter, FastAPI, Depends, Header
 from routes.loginRoute import validar_token, validar_token_admin
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
@@ -66,7 +66,7 @@ async def aprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_tok
      return ControllerUser.aprovarPsi(CPF)
 
 @userAPI.patch("/desaprovar-psicologo/{CPF}", tags=["usuarios"]) 
-async def aprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_token_admin)]
+async def desaprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_token_admin)]
      return ControllerUser.desaprovarPsi(CPF)
 
 
