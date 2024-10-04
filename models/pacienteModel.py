@@ -10,5 +10,6 @@ class Paciente(BaseModel):
     grupo : str 
     nomeCompletoResponsavel : str
     telefoneResponsavel : str
+    emailPsi : str
     tipo : str | None = "Paciente"
     status: str | None = "Ativo"

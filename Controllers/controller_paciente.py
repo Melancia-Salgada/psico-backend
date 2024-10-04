@@ -17,28 +17,36 @@ collection = db[collection_name]
 class ControllerPaciente:
 
     @staticmethod
-    def buscarPaciente(nomeCompleto : str):
+    def buscarPaciente(email : str):
         try:
-            paciente = collection.find_one({"nomeCompleto" : nomeCompleto})
+            paciente = collection.find_one({"email" : email})
             paciente["_id"] = str(paciente["_id"])
             return paciente
         except Exception:
             raise Exceptions.erro_manipular_cliente
 
     @staticmethod
-    def desativarPaciente(paciente : Paciente): 
+    def desativarPaciente(email : str): 
       try:
-        collection.update_one({"nomeCompleto" : paciente.nomeCompleto}, {"$set" : {"status" : "Inativo"}})  
+        collection.update_one({"email" : email}, {"$set" : {"status" : "Inativo"}})  
         return {"Sucesso: " : "Paciente desativado"}
+      except Exception: 
+        raise Exceptions.erro_manipular_cliente()
+      
+    @staticmethod
+    def ativarPaciente(email : str): 
+      try:
+        collection.update_one({"email" : email}, {"$set" : {"status" : "Ativo"}})  
+        return {"Sucesso: " : "Paciente ativado"}
       except Exception: 
         raise Exceptions.erro_manipular_cliente()
 
             
     @staticmethod
-    def updatePaciente(user_data: dict, nomeCompleto:str): 
+    def updatePaciente(user_data: dict, email : str): 
         try:
             print(user_data)
-            query = {"nomeCompleto": nomeCompleto}
+            query = {"email": email}
             print(query)
             campos = [
                         "nomeCompleto",
@@ -49,7 +57,9 @@ class ControllerPaciente:
                         "grupo",
                         "nomeCompletoResponsavel",
                         "telefoneResponsavel",
-                        "tipo"
+                        "emailPsi",
+                        "tipo",
+                        "status"
                       ]
 
             camposAtualizados = {}
@@ -69,16 +79,20 @@ class ControllerPaciente:
         except Exception:
             raise Exceptions.erro_manipular_usuario()
 
-    #FAZER UMA LIST DENTRO DE CASA PSICOLOGO E INSERIR O PACIENTE LÁ SERIA MT MELHOR
-    async def insertPacienteTest(paciente : Paciente) -> dict:
-      collection.insert_one(dict(paciente))
-      return {"SE DER '201' TÁ QUERENDO: " : status.HTTP_201_CREATED}
+    async def insertPaciente(paciente : Paciente, psicologo : dict) -> dict:
+      try:
+        paciente.emailPsi = psicologo["email"]
+        collection.insert_one(dict(paciente))
+        return {"Criado" : "Paciente criado com sucesso!"}
+      except Exception:
+        raise Exceptions.erro_paciente()
 
 
     @staticmethod
-    def getAllPacientes():
+    def getAllPacientes(psicologo : dict):
+      emailPsi = psicologo["email"]
       try: 
-        pacientes = [pc for pc in collection.find({"tipo" : "Paciente"})]
+        pacientes = [pc for pc in collection.find({"$and":[{"tipo" : "Paciente"}, {"emailPsi" : emailPsi}]})]
         
         for pc in pacientes:
           pc["_id"] = str(pc["_id"])

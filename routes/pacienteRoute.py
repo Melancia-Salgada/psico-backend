@@ -17,27 +17,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-#Rota de teste, nao colocar em producao pf
 @pacienteAPI.post('/novo-paciente', tags=["usuarios"])
-async def createPaciente(paciente : Paciente):
-     return await ControllerPaciente.insertPacienteTest(paciente)
+async def createPaciente(paciente : Paciente, Authorization: Annotated[Header, Depends(validar_token)]):
+     return await ControllerPaciente.insertPaciente(paciente, Authorization)
 
 @pacienteAPI.get("/todos-pacientes", tags=["usuarios"])
-async def listarPacientes(): #Authorization: Annotated[Header, Depends(validar_token)]
-     return ControllerPaciente.getAllPacientes()
+async def listarPacientes(Authorization: Annotated[Header, Depends(validar_token)]): 
+     return ControllerPaciente.getAllPacientes(Authorization)
 
-@pacienteAPI.patch("/atualizar-paciente/{nomeCompleto}", tags="usuarios")
-async def atualizarPaciente(nomeCompleto : str, paciente : Paciente, Authorization: Annotated[Header, Depends(validar_token)]):
-     return ControllerPaciente.updatePaciente(dict(paciente), nomeCompleto)
+@pacienteAPI.patch("/atualizar-paciente/{email}", tags=["usuarios"])
+async def atualizarPaciente(email : str, paciente : Paciente, Authorization: Annotated[Header, Depends(validar_token)]):
+     return ControllerPaciente.updatePaciente(dict(paciente), email)
 
-@pacienteAPI.patch("/desativar-paciente", tags= "usuarios")
-async def desativarPaciente(paciente : Paciente, Authorization: Annotated[Header, Depends(validar_token)]):
-     ControllerPaciente.desativarPaciente(paciente)
+@pacienteAPI.patch("/desativar-paciente/{email}", tags=["usuarios"])
+async def desativarPaciente(email : str, Authorization: Annotated[Header, Depends(validar_token)]):
+     return ControllerPaciente.desativarPaciente(email)
+
+@pacienteAPI.patch("/ativar-paciente/{email}", tags=["usuarios"])
+async def ativarPaciente(email : str, Authorization: Annotated[Header, Depends(validar_token)]):
+     return ControllerPaciente.ativarPaciente(email)
+
      
-@pacienteAPI.get("/buscar-paciente/{nomeCompleto}", tags =["usuarios"])
-async def buscarPaciente(nomeCompleto : str, Authorization: Annotated[Header, Depends(validar_token)]):
-     return ControllerPaciente.buscarPaciente(nomeCompleto)
+@pacienteAPI.get("/buscar-paciente/{email}", tags =["usuarios"])
+async def buscarPaciente(email : str, Authorization: Annotated[Header, Depends(validar_token)]):
+     return ControllerPaciente.buscarPaciente(email)
      
 
 app.include_router(pacienteAPI)

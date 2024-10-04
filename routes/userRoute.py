@@ -2,7 +2,7 @@ from fastapi import APIRouter, FastAPI, Depends, Header
 from routes.loginRoute import validar_token, validar_token_admin
 from typing import Annotated
 from fastapi.middleware.cors import CORSMiddleware
-from models.userModel import Paciente, User,Psicologo,Admin
+from models.userModel import User,Psicologo, Admin
 #importando controllers
 from Controllers.Controller_user import ControllerUser
 from services.Email import email24Depois
