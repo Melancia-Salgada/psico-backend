@@ -302,3 +302,8 @@ class ControllerUser:
       except Exception:
         raise Exceptions.erro_manipular_usuario()
       
+
+    def retornar_psicologo(self,psicologo_logado: dict):
+        psi = self.getSingleUser(psicologo_logado["email"])
+        return psi["google_calendar_id"]
+      

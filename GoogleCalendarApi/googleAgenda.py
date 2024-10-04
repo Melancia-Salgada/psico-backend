@@ -97,7 +97,8 @@ class GoogleCalendar:
             print("chegou aqui")
             print("olha o evento:", event)
 
-            id_calendar = self.retornar_psicologo(psicologo_logado)
+            controller_user = ControllerUser()
+            id_calendar = controller_user.retornar_psicologo(psicologo_logado)
             
             created_event = self.service.events().insert(calendarId=id_calendar, body=event).execute()
             print('Event created:', created_event.get('htmlLink'))
@@ -157,10 +158,11 @@ class GoogleCalendar:
         try:
             self.auth_api()
 
-            calendar_id = self.retornar_psicologo(psicologo_logado)
+            controller_user = ControllerUser()
+            id_calendar = controller_user.retornar_psicologo(psicologo_logado)
 
             # Listando eventos do calendário
-            eventos = self.service.events().list(calendarId=calendar_id).execute()
+            eventos = self.service.events().list(calendarId=id_calendar).execute()
             eventos_lista = eventos.get('items', [])
 
             if not eventos_lista:
@@ -217,9 +219,10 @@ class GoogleCalendar:
       try:
           self.auth_api()
 
-          calendar_id = self.retornar_psicologo(psicologo_logado)
+          controller_user = ControllerUser()
+          id_calendar = controller_user.retornar_psicologo(psicologo_logado)
 
-          event = self.service.events().get(calendarId= calendar_id, eventId=eventId).execute()
+          event = self.service.events().get(calendarId= id_calendar, eventId=eventId).execute()
           event['summary'] = evento_atualizado.nome
           event['description'] = evento_atualizado.descricao
 
@@ -239,9 +242,10 @@ class GoogleCalendar:
         try:
             self.auth_api()
 
-            calendar_id = self.retornar_psicologo(psicologo_logado)
+            controller_user = ControllerUser()
+            id_calendar = controller_user.retornar_psicologo(psicologo_logado)
 
-            self.service.events().delete(calendarId= calendar_id, eventId=event_ID).execute()
+            self.service.events().delete(calendarId= id_calendar, eventId=event_ID).execute()
             return status.HTTP_200_OK
           
         except HttpError as error:
