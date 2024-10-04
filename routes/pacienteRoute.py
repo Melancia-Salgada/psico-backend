@@ -31,10 +31,6 @@ async def listarPacientes(): #Authorization: Annotated[Header, Depends(validar_t
 async def atualizarPaciente(nomeCompleto : str, paciente : Paciente, Authorization: Annotated[Header, Depends(validar_token)]):
      return ControllerPaciente.updatePaciente(dict(paciente), nomeCompleto)
 
-@pacienteAPI.get("/buscar-paciente/{email}", tags=["pacientes"])
-async def buscarPaciente(email:str):
-     return ControllerUser.buscarPaciente(email)
-
 @pacienteAPI.patch("/desativar-paciente", tags= "usuarios")
 async def desativarPaciente(paciente : Paciente, Authorization: Annotated[Header, Depends(validar_token)]):
      ControllerPaciente.desativarPaciente(paciente)

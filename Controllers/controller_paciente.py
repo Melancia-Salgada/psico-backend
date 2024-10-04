@@ -1,5 +1,5 @@
 from configs.db import create_mongodb_connection
-from models.userModel import Paciente
+from models.pacienteModel import Paciente
 from services.Exceptions import Exceptions
 from fastapi import status
 
