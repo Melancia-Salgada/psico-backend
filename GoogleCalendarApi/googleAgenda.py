@@ -10,6 +10,7 @@ from googleapiclient.errors import HttpError
 from models.agendamentoModel import Agendamento
 from fastapi import HTTPException,status
 from Controllers.Controller_user import ControllerUser
+from Controllers.controller_paciente import ControllerPaciente
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = [
@@ -58,8 +59,6 @@ class GoogleCalendar:
         data  = self.formatar_data(data)
         print(data)
 
-        
-
         try:
             self.auth_api()
 
@@ -67,10 +66,7 @@ class GoogleCalendar:
             request = meet_v2.CreateSpaceRequest()
             response = client.create_space(request=request)
             link_meet = response.meeting_uri
-            print(type(response.meeting_uri))
             descricao = descricao+ " |  "+link_meet
-
-           
 
             event = {
                 'summary': nome,
@@ -93,36 +89,29 @@ class GoogleCalendar:
                         {'method': 'popup', 'minutes': 10},
                     ],
                 },
+                'extendedProperties': { # o link da meet deve ser acessado pelo botão aqui
+                    'shared': {
+                        'link_meet': link_meet
+                    }   
+                }
             }
             print("chegou aqui")
             print("olha o evento:", event)
-
+            
             controller_user = ControllerUser()
             id_calendar = controller_user.retornar_psicologo(psicologo_logado)
             
             created_event = self.service.events().insert(calendarId=id_calendar, body=event).execute()
             print('Event created:', created_event.get('htmlLink'))
 
-            
-
             return status.HTTP_200_OK
             
-            """if ControllerCliente.getClienteAgendamento(email_convidado):
-                
-                copia_agendamento = event.copy()
-                copia_agendamento["preco"] = evento.preco
-                copia_agendamento["id"] = created_event['id']
-                controller_agendamento = Controller_Copia_Agendamento()
-                controller_agendamento.inserir_agendamento(copia_agendamento)
-                
-            else:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="cliente não encontrado nos registros do sistema")"""
-
         except HttpError as error:
             raise HTTPException(status_code=error.resp.status, detail=f"An error occurred: {error}")
         except Exception as erro:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"erro ao criar evento: {str(erro)}")
 
+    
     def formatar_data(self, data: str):
         try:
             data_atual = data.split("-")
