@@ -79,6 +79,9 @@ class GoogleCalendar:
                     'dateTime': f"{data}T{hora_fim}",
                     'timeZone': 'America/Sao_Paulo',
                 },
+                'recurrence': [
+                    'RRULE:FREQ=WEEKLY;UNTIL=20241115T170000Z',
+                ],
                 'attendees': [
                     {'email': email_cliente},
                 ],
@@ -220,7 +223,7 @@ class GoogleCalendar:
           event['end']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_fim}:00"
           event['attendees'][0]['email'] = evento_atualizado.email_cliente
 
-          self.service.events().update(calendarId= calendar_id, eventId=eventId, body=event).execute()
+          self.service.events().update(calendarId= id_calendar, eventId=eventId, body=event).execute()
           return status.HTTP_200_OK
           
       except HttpError as error:

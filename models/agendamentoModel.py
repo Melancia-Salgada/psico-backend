@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, List
 from pydantic import BaseModel
 
 """event = {
@@ -32,6 +32,7 @@ class Agendamento(BaseModel):
     data: str
     hora_inicio: str
     hora_fim: str
+    recurrence: List[str] | None = None
     email_cliente: str
     preco: float
   
