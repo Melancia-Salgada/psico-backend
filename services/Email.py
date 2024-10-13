@@ -80,6 +80,42 @@ class ControllerEmail:
             print("Erro ao enviar e-mail:", e)
 
 
+    async def emailLembreteConsulta(self,email: str, link_meet:str):
+        try:
+            emailusuario = email
+            
+        
+            
+            html = f"""
+                <h1>Olá,</h1>
+                <p>Este é um lembrete da sua sessão de terapia.</p>
+                <br>
+                <br>
+                <p>Segue abaixo o link da consulta:</p>
+                <br>
+                <p>{link_meet}</p>
+                <br>
+                <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
+                <p>Atenciosamente,</p>
+                <p>EasyPsi</p>
+            """
+            
+            message = MessageSchema(
+                subject="Lembrete de sessão de terapia",
+                recipients=[emailusuario],
+                body=html,
+                subtype=MessageType.html
+            )
+            
+            # Envio do e-mail
+            await fm.send_message(message)
+        except Exception as e:
+            # Tratamento de exceções
+            print("Erro ao enviar e-mail:", e)
+
+
+
+
 async def emailEsqueceuSenha(user: User,token:str): #, token: str
     try:
         emailusuario = user["email"]
@@ -176,72 +212,3 @@ async def email24Antes(email: str):
         # Tratamento de exceções
         print("Erro ao enviar e-mail:", e)
 
-async def email24Depois(email: str):
-    try:
-        emailusuario = email
-       
-        
-        html = """
-            <h1>Olá!</h1>
-            <p>Esperamos que você esteja satisfeito com sua nova tatuagem feita na InkDash!</p>
-            <br>
-            <p>Gostaríamos de saber se deu tudo certo com o procedimento. Caso tenha alguma dúvida ou preocupação, por favor, não hesite em nos contatar.</p>
-            <br>
-            <p>Aqui estão alguns cuidados importantes para garantir que sua tatuagem cicatrize bem:</p>
-            <ul>
-                <li>Mantenha a área tatuada limpa e hidratada.</li>
-                <li>Evite exposição direta ao sol.</li>
-                <li>Não submerja a tatuagem em água (banheiras, piscinas, etc.).</li>
-                <li>Evite coçar ou arrancar casquinhas que possam se formar.</li>
-            </ul>
-            <br>
-            <p>Estamos aqui para qualquer dúvida que você possa ter.</p>
-            <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
-            <p>Atenciosamente,</p>
-            <p>Equipe da InkDash</p>
-        """
-        
-        message = MessageSchema(
-            subject="Confirmação e Cuidados Pós-Tatuagem - InkDash",
-            recipients=[emailusuario],
-            body=html,
-            subtype=MessageType.html
-        )
-        
-        # Envio do e-mail
-        await fm.send_message(message)
-    except Exception as e:
-        # Tratamento de exceções
-        print("Erro ao enviar e-mail:", e)
-
-async def emailRetorno(email: str):
-    try:
-        emailusuario =email
-        
-        
-        html = """
-            <h1>Olá,</h1>
-            <p>Esperamos que você esteja gostando da sua nova tatuagem feita na InkDash!</p>
-            <br>
-            <p>Como parte do nosso plano de cuidados, gostaríamos de lembrá-lo sobre a possibilidade de realizar ajustes na sua tatuagem, caso seja necessário.</p>
-            <p>É importante garantir que todos os detalhes estejam perfeitos e que a tatuagem esteja cicatrizando bem.</p>
-            <br>
-            <p>Por favor, entre em contato conosco para agendar um retorno. Estamos à disposição para qualquer ajuste que precise ser feito.</p>
-            <br>
-            <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
-            <p>Atenciosamente,</p>
-            <p>Equipe da InkDash</p>
-        """
-        
-        message = MessageSchema(
-            subject="Retorno para Ajustes na Tatuagem - InkDash",
-            recipients=[emailusuario],
-            body=html,
-            subtype=MessageType.html
-        )
-        
-        # Envio do e-mail
-        await fm.send_message(message)
-    except Exception as e:
-        # Tratamento de exceções
-        print("Erro ao enviar e-mail:", e)

@@ -11,6 +11,7 @@ from models.agendamentoModel import Agendamento
 from fastapi import HTTPException,status
 from Controllers.Controller_user import ControllerUser
 from Controllers.controller_paciente import ControllerPaciente
+from services.Email import ControllerEmail
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = [
@@ -67,6 +68,8 @@ class GoogleCalendar:
             response = client.create_space(request=request)
             link_meet = response.meeting_uri
             descricao = descricao+ " |  "+link_meet
+
+            evento.link_meet = link_meet
 
             event = {
                 'summary': nome,
@@ -134,6 +137,16 @@ class GoogleCalendar:
         psi = ControllerUser.getSingleUser(psicologo_logado["email"])
         return psi["google_calendar_id"]
     
+
+    async def enviarLembreteConfirmacao(self,evento:Agendamento):
+        emailPaciente = evento.email_cliente
+        link_meet = evento.link_meet
+        print(f"extraindo link da meet: {link_meet}, email do cliente: {emailPaciente}")
+        controller = ControllerEmail()
+        await controller.emailLembreteConsulta(emailPaciente,link_meet)
+        
+
+    
           
     def listar_calendarios(self):
       try:
@@ -170,6 +183,8 @@ class GoogleCalendar:
                 inicio = evento['start'].get('dateTime', evento['start'].get('date'))  # Data/hora de início
                 fim = evento['end'].get('dateTime', evento['end'].get('date'))  # Data/hora de fim
                 email_cliente = evento['attendees'][0]['email'] if 'attendees' in evento and evento['attendees'] else 'Sem e-mail'  # Email do cliente
+                 # Extraindo o link do meet, se existir
+                link_meet = evento.get('extendedProperties', {}).get('shared', {}).get('link_meet', 'sem link')
 
                 # Converter o início e fim para o formato brasileiro
                 inicio_br = self.formatar_data_hora(inicio)
@@ -182,7 +197,8 @@ class GoogleCalendar:
                     'descricao': descricao,
                     'inicio': inicio_br,
                     'fim': fim_br,
-                    'email_cliente': email_cliente
+                    'email_cliente': email_cliente,
+                    'link meet':link_meet
                 }
 
                 eventos_principais.append(evento_principal)

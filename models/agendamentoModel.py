@@ -33,6 +33,7 @@ class Agendamento(BaseModel):
     hora_inicio: str
     hora_fim: str
     recurrence: List[str] | None = None
+    link_meet: str | None = None
     email_cliente: str
     preco: float
   

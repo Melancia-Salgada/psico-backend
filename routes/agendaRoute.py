@@ -28,7 +28,7 @@ async def createAgendamento(Authorization: Annotated[Header, Depends(validar_tok
     controller = GoogleCalendar()
     return controller.listar_eventos(Authorization)
 
-@agendaAPI.patch("/atualizar-agendamento/{eventId}")
+@agendaAPI.patch("/atualizar-agendamento/{eventId}", tags=["agendamentos"])
 async def atualizarAgendamentos(eventId:str,evento: Agendamento,Authorization: Annotated[Header, Depends(validar_token)]):
     controller = GoogleCalendar()
     return controller.updateAgendamento(eventId, evento, Authorization)
@@ -42,5 +42,10 @@ async def excluirAgendamentos(eventId:str,Authorization: Annotated[Header, Depen
 async def listarAgendas(Authorization: Annotated[Header, Depends(validar_token)]):
     controller = GoogleCalendar()
     return controller.listar_calendarios()
+
+@agendaAPI.post("/enviar-lembrete", tags=["agendamentos"])
+async def enviarLembreteConsulta(evento:Agendamento, Authorization: Annotated[Header, Depends(validar_token)]):
+    controller = GoogleCalendar()
+    return await controller.enviarLembreteConfirmacao(evento)
 
 app.include_router(agendaAPI)
