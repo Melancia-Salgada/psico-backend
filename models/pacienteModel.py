@@ -8,6 +8,7 @@ class Paciente(BaseModel):
     telefone : str
     email : str
     grupo : str 
+    valor: float
     nomeCompletoResponsavel : str
     telefoneResponsavel : str
     emailPsi : str
