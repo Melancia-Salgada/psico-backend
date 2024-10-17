@@ -5,7 +5,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from models.userModel import User,Psicologo, Admin
 #importando controllers
 from Controllers.Controller_user import ControllerUser
-from services.Email import email24Depois
 
 app = FastAPI()
 userAPI = APIRouter()
