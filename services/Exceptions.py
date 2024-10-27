@@ -62,3 +62,10 @@ class Exceptions(Exception):
     status_code=status.HTTP_404_NOT_FOUND,
     detail="Erro ao manipular material no banco de dados",)
     return credentials_exception
+  
+  def erro_paciente():
+    credentials_exception = HTTPException(
+      status_code=status.HTTP_404_NOT_FOUND,
+      detail="Erro ao manipular o paciente")
+    return credentials_exception
+    

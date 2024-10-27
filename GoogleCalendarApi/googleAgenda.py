@@ -4,17 +4,21 @@ import os.path
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
+from google.apps import meet_v2
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from models.agendamentoModel import Agendamento
 from fastapi import HTTPException,status
 from Controllers.Controller_user import ControllerUser
+from Controllers.controller_paciente import ControllerPaciente
+from services.Email import ControllerEmail
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = [
     "https://www.googleapis.com/auth/calendar",
     "https://www.googleapis.com/auth/calendar.events",
-    "https://www.googleapis.com/auth/calendar.readonly"
+    "https://www.googleapis.com/auth/calendar.readonly",
+    'https://www.googleapis.com/auth/meetings.space.created'
 ]
 
 
@@ -58,6 +62,15 @@ class GoogleCalendar:
 
         try:
             self.auth_api()
+
+            client = meet_v2.SpacesServiceClient(credentials=self.creds)
+            request = meet_v2.CreateSpaceRequest()
+            response = client.create_space(request=request)
+            link_meet = response.meeting_uri
+            descricao = descricao+ " |  "+link_meet
+
+            evento.link_meet = link_meet
+
             event = {
                 'summary': nome,
                 'description': descricao,
@@ -69,6 +82,9 @@ class GoogleCalendar:
                     'dateTime': f"{data}T{hora_fim}",
                     'timeZone': 'America/Sao_Paulo',
                 },
+                'recurrence': [
+                    'RRULE:FREQ=WEEKLY;UNTIL=20241115T170000Z',
+                ],
                 'attendees': [
                     {'email': email_cliente},
                 ],
@@ -79,32 +95,29 @@ class GoogleCalendar:
                         {'method': 'popup', 'minutes': 10},
                     ],
                 },
+                'extendedProperties': { # o link da meet deve ser acessado pelo botão aqui
+                    'shared': {
+                        'link_meet': link_meet
+                    }   
+                }
             }
             print("chegou aqui")
             print("olha o evento:", event)
-
-            id_calendar = self.retornar_psicologo(psicologo_logado)
+            
+            controller_user = ControllerUser()
+            id_calendar = controller_user.retornar_psicologo(psicologo_logado)
             
             created_event = self.service.events().insert(calendarId=id_calendar, body=event).execute()
             print('Event created:', created_event.get('htmlLink'))
+
             return status.HTTP_200_OK
             
-            """if ControllerCliente.getClienteAgendamento(email_convidado):
-                
-                copia_agendamento = event.copy()
-                copia_agendamento["preco"] = evento.preco
-                copia_agendamento["id"] = created_event['id']
-                controller_agendamento = Controller_Copia_Agendamento()
-                controller_agendamento.inserir_agendamento(copia_agendamento)
-                
-            else:
-                raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="cliente não encontrado nos registros do sistema")"""
-
         except HttpError as error:
             raise HTTPException(status_code=error.resp.status, detail=f"An error occurred: {error}")
         except Exception as erro:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"erro ao criar evento: {str(erro)}")
 
+    
     def formatar_data(self, data: str):
         try:
             data_atual = data.split("-")
@@ -124,6 +137,16 @@ class GoogleCalendar:
         psi = ControllerUser.getSingleUser(psicologo_logado["email"])
         return psi["google_calendar_id"]
     
+
+    async def enviarLembreteConfirmacao(self,evento:Agendamento):
+        emailPaciente = evento.email_cliente
+        link_meet = evento.link_meet
+        print(f"extraindo link da meet: {link_meet}, email do cliente: {emailPaciente}")
+        controller = ControllerEmail()
+        await controller.emailLembreteConsulta(emailPaciente,link_meet)
+        
+
+    
           
     def listar_calendarios(self):
       try:
@@ -140,10 +163,11 @@ class GoogleCalendar:
         try:
             self.auth_api()
 
-            calendar_id = self.retornar_psicologo(psicologo_logado)
+            controller_user = ControllerUser()
+            id_calendar = controller_user.retornar_psicologo(psicologo_logado)
 
             # Listando eventos do calendário
-            eventos = self.service.events().list(calendarId=calendar_id).execute()
+            eventos = self.service.events().list(calendarId=id_calendar).execute()
             eventos_lista = eventos.get('items', [])
 
             if not eventos_lista:
@@ -159,6 +183,8 @@ class GoogleCalendar:
                 inicio = evento['start'].get('dateTime', evento['start'].get('date'))  # Data/hora de início
                 fim = evento['end'].get('dateTime', evento['end'].get('date'))  # Data/hora de fim
                 email_cliente = evento['attendees'][0]['email'] if 'attendees' in evento and evento['attendees'] else 'Sem e-mail'  # Email do cliente
+                 # Extraindo o link do meet, se existir
+                link_meet = evento.get('extendedProperties', {}).get('shared', {}).get('link_meet', 'sem link')
 
                 # Converter o início e fim para o formato brasileiro
                 inicio_br = self.formatar_data_hora(inicio)
@@ -171,7 +197,8 @@ class GoogleCalendar:
                     'descricao': descricao,
                     'inicio': inicio_br,
                     'fim': fim_br,
-                    'email_cliente': email_cliente
+                    'email_cliente': email_cliente,
+                    'link meet':link_meet
                 }
 
                 eventos_principais.append(evento_principal)
@@ -200,9 +227,10 @@ class GoogleCalendar:
       try:
           self.auth_api()
 
-          calendar_id = self.retornar_psicologo(psicologo_logado)
+          controller_user = ControllerUser()
+          id_calendar = controller_user.retornar_psicologo(psicologo_logado)
 
-          event = self.service.events().get(calendarId= calendar_id, eventId=eventId).execute()
+          event = self.service.events().get(calendarId= id_calendar, eventId=eventId).execute()
           event['summary'] = evento_atualizado.nome
           event['description'] = evento_atualizado.descricao
 
@@ -211,7 +239,7 @@ class GoogleCalendar:
           event['end']['dateTime'] = f"{data_formatada}T{evento_atualizado.hora_fim}:00"
           event['attendees'][0]['email'] = evento_atualizado.email_cliente
 
-          self.service.events().update(calendarId= calendar_id, eventId=eventId, body=event).execute()
+          self.service.events().update(calendarId= id_calendar, eventId=eventId, body=event).execute()
           return status.HTTP_200_OK
           
       except HttpError as error:
@@ -222,9 +250,10 @@ class GoogleCalendar:
         try:
             self.auth_api()
 
-            calendar_id = self.retornar_psicologo(psicologo_logado)
+            controller_user = ControllerUser()
+            id_calendar = controller_user.retornar_psicologo(psicologo_logado)
 
-            self.service.events().delete(calendarId= calendar_id, eventId=event_ID).execute()
+            self.service.events().delete(calendarId= id_calendar, eventId=event_ID).execute()
             return status.HTTP_200_OK
           
         except HttpError as error:
@@ -232,60 +261,3 @@ class GoogleCalendar:
     
 
 
-"""def main():
-  Shows basic usage of the Google Calendar API.
-  Prints the start and name of the next 10 events on the user's calendar.
-  
-  creds = None
-  # The file token.json stores the user's access and refresh tokens, and is
-  # created automatically when the authorization flow completes for the first
-  # time.
-  if os.path.exists("token.json"):
-    creds = Credentials.from_authorized_user_file("token.json", SCOPES)
-  # If there are no (valid) credentials available, let the user log in.
-  if not creds or not creds.valid:
-    if creds and creds.expired and creds.refresh_token:
-      creds.refresh(Request())
-    else:
-      flow = InstalledAppFlow.from_client_secrets_file(
-          "credentials.json", SCOPES
-      )
-      creds = flow.run_local_server(port=0)
-    # Save the credentials for the next run
-    with open("token.json", "w") as token:
-      token.write(creds.to_json())
-
-  try:
-    service = build("calendar", "v3", credentials=creds)
-
-    # Call the Calendar API
-    now = datetime.datetime.utcnow().isoformat() + "Z"  # 'Z' indicates UTC time
-    print("Getting the upcoming 10 events")
-    events_result = (
-        service.events()
-        .list(
-            calendarId="primary",
-            timeMin=now,
-            maxResults=10,
-            singleEvents=True,
-            orderBy="startTime",
-        )
-        .execute()
-    )
-    events = events_result.get("items", [])
-
-    if not events:
-      print("No upcoming events found.")
-      return
-
-    # Prints the start and name of the next 10 events
-    for event in events:
-      start = event["start"].get("dateTime", event["start"].get("date"))
-      print(start, event["summary"])
-
-  except HttpError as error:
-    print(f"An error occurred: {error}")
-
-
-if __name__ == "__main__":
-  main()"""

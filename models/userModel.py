@@ -16,21 +16,6 @@ class Psicologo(BaseModel):
     CPNJ: str |None = None
     tipo: str |None = "Psicólogo"
     status: str | None = "Pendente"
-    
-    
-    
-class Paciente(BaseModel):
-    nomeCompleto : str
-    sexo : str
-    idade : int
-    telefone : str
-    email : str
-    grupo : str 
-    nomeCompletoResponsavel : str
-    telefoneResponsavel : str
-    tipo : str | None = "Paciente"
-
-
 
 class Admin(BaseModel): 
     username: str
@@ -39,6 +24,20 @@ class Admin(BaseModel):
     email:str
     CPF: str
     tipo: str |None = "Administrador"
+
+
+usuario_admin = Admin(
+    username="system",
+    password="admin123",
+    phonenumber="1234567890",  # Substitua pelo número real
+    email="system@example.com",  # Substitua pelo email real
+    CPF="123.456.789-00"  # Substitua pelo CPF real
+)
+
+# Convertendo para JSON
+usuario_admin_json = dict(usuario_admin)
+print(usuario_admin_json)
+
 
 
 
