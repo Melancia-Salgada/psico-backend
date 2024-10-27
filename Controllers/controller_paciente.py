@@ -1,4 +1,5 @@
 from configs.db import create_mongodb_connection
+from models.dadosClinicosModel import dadosClinicos
 from models.pacienteModel import Paciente
 from services.Exceptions import Exceptions
 from fastapi import status
@@ -55,6 +56,7 @@ class ControllerPaciente:
                         "telefone",
                         "email",
                         "grupo",
+                        "valor",
                         "nomeCompletoResponsavel",
                         "telefoneResponsavel",
                         "emailPsi",
@@ -100,6 +102,11 @@ class ControllerPaciente:
         return {"Pacientes" : pacientes}
       except Exception:
         raise Exceptions.erro_manipular_cliente
+      
+    # dados clínicos
+    #@staticmethod
+    #def registrar_dado_clinico(registro: dadosClinicos):
+     # return True
     
     
 

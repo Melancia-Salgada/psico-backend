@@ -1,6 +1,6 @@
 from fastapi import APIRouter, FastAPI, Depends,Header
 from Controllers.Controller_dadosClinicos import ControllerDadosClinicos, dadosClinicos
-from models.dadosClinicos import dadosClinicos
+from models.dadosClinicosModel import dadosClinicos
 from fastapi.middleware.cors import CORSMiddleware
 
 

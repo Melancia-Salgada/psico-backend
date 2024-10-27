@@ -1,5 +1,5 @@
 from fastapi import HTTPException, status
-from models.dadosClinicos import dadosClinicos
+from models.dadosClinicosModel import dadosClinicos
 from configs.db import create_mongodb_connection
 from pydantic import ValidationError
 from typing import Dict, Any
