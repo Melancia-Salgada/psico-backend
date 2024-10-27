@@ -1,6 +1,6 @@
 from configs.db import create_mongodb_connection
-from models.dadosClinicosModel import dadosClinicos
-from models.pacienteModel import Paciente
+#from models.dadosClinicosModel import dadosClinicos
+from models.pacienteModel import Paciente, dadosClinicos
 from services.Exceptions import Exceptions
 from fastapi import status
 
@@ -83,10 +83,18 @@ class ControllerPaciente:
 
     async def insertPaciente(paciente : Paciente, psicologo : dict) -> dict:
       try:
+
+        existingUser = collection.find_one({"email":paciente.email})
+        if existingUser :
+          raise Exceptions.usuario_existente()
+        
+       
         paciente.emailPsi = psicologo["email"]
-        collection.insert_one(dict(paciente))
+        print("email psicologo chegou aqui")
+        collection.insert_one(paciente.dict(by_alias=True))
+        print("chegou aqui")
         return {"Criado" : "Paciente criado com sucesso!"}
-      except Exception:
+      except Exception as ex:
         raise Exceptions.erro_paciente()
 
 
@@ -103,10 +111,44 @@ class ControllerPaciente:
       except Exception:
         raise Exceptions.erro_manipular_cliente
       
-    # dados clínicos
-    #@staticmethod
-    #def registrar_dado_clinico(registro: dadosClinicos):
-     # return True
+     #dados clínicos
+    @staticmethod
+    def registrar_dado_clinico(email_paciente: str, registro: dadosClinicos):
+      print("Chegou na função")
+      print("registro: ",registro)
+      print(email_paciente)
+      try:
+          # Procurar o paciente pelo email
+          print("Procurando paciente")
+         
+          paciente = collection.find_one({"email": email_paciente})
+
+          if not paciente:
+              print("Erro: paciente não encontrado.")
+              raise Exceptions.erro_manipular_cliente()
+
+          # Inicializar `dados_clinicos` caso esteja vazio
+          print("Achou o paciente")
+          dados_clinicos = paciente.get("dados_clinicos", [])
+
+          # Converte o objeto de registro para um dicionário e adiciona à lista
+          dados_clinicos.append(dict(registro))  # Usa dict() para converter
+
+          # Atualizar a lista `dados_clinicos` no MongoDB
+          result = collection.update_one(
+              {"email": email_paciente},
+              {"$set": {"dados_clinicos": dados_clinicos}}
+          )
+
+          if result.modified_count > 0:
+              return {"message": "Dado clínico registrado com sucesso"}
+          else:
+              raise Exceptions.erro_manipular_cliente()
+      except Exception as ex:
+          print(f"Erro: {ex}")  # Exibir o erro para debugging
+          raise Exceptions.erro_manipular_cliente2()
+
+
     
     
 

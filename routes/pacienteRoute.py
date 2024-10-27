@@ -1,6 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, FastAPI, Depends,Header
-from models.pacienteModel import Paciente
+from models.pacienteModel import Paciente,dadosClinicos
 from fastapi.middleware.cors import CORSMiddleware
 from Controllers.controller_paciente import ControllerPaciente
 from routes.loginRoute import validar_token
@@ -41,6 +41,11 @@ async def ativarPaciente(email : str, Authorization: Annotated[Header, Depends(v
 @pacienteAPI.get("/buscar-paciente/{email}", tags =["usuarios"])
 async def buscarPaciente(email : str, Authorization: Annotated[Header, Depends(validar_token)]):
      return ControllerPaciente.buscarPaciente(email)
+
+@pacienteAPI.post("/registrar-dado-clinico/{email_paciente}", tags=["usuarios"])
+async def createDadoClinico(registro : dadosClinicos, email_paciente:str,Authorization: Annotated[Header, Depends(validar_token)]):
+     print("chegou na rota")
+     return ControllerPaciente.registrar_dado_clinico(email_paciente,dict(registro))
      
 
 app.include_router(pacienteAPI)
