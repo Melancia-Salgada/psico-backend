@@ -46,6 +46,10 @@ async def buscarPaciente(email : str, Authorization: Annotated[Header, Depends(v
 async def createDadoClinico(registro : dadosClinicos, email_paciente:str,Authorization: Annotated[Header, Depends(validar_token)]):
      print("chegou na rota")
      return ControllerPaciente.registrar_dado_clinico(email_paciente,dict(registro))
+
+@pacienteAPI.get("/listar-dados-clinicos/{email}", tags =["usuarios"])
+async def retornarDadosClinicos(email : str, Authorization: Annotated[Header, Depends(validar_token)]):
+     return ControllerPaciente.listar_dado_clinico(email)
      
 
 app.include_router(pacienteAPI)

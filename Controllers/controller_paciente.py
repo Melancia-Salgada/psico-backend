@@ -88,7 +88,6 @@ class ControllerPaciente:
         if existingUser :
           raise Exceptions.usuario_existente()
         
-       
         paciente.emailPsi = psicologo["email"]
         print("email psicologo chegou aqui")
         collection.insert_one(paciente.dict(by_alias=True))
@@ -114,21 +113,13 @@ class ControllerPaciente:
      #dados clínicos
     @staticmethod
     def registrar_dado_clinico(email_paciente: str, registro: dadosClinicos):
-      print("Chegou na função")
-      print("registro: ",registro)
-      print(email_paciente)
       try:
-          # Procurar o paciente pelo email
-          print("Procurando paciente")
-         
           paciente = collection.find_one({"email": email_paciente})
 
           if not paciente:
-              print("Erro: paciente não encontrado.")
               raise Exceptions.erro_manipular_cliente()
 
           # Inicializar `dados_clinicos` caso esteja vazio
-          print("Achou o paciente")
           dados_clinicos = paciente.get("dados_clinicos", [])
 
           # Converte o objeto de registro para um dicionário e adiciona à lista
@@ -147,6 +138,25 @@ class ControllerPaciente:
       except Exception as ex:
           print(f"Erro: {ex}")  # Exibir o erro para debugging
           raise Exceptions.erro_manipular_cliente2()
+      
+
+    @staticmethod
+    def listar_dado_clinico(email_paciente: str):
+       try:
+          paciente = collection.find_one({"email": email_paciente})
+
+          if not paciente:
+              print("Erro: paciente não encontrado.")
+              raise Exceptions.erro_manipular_cliente()
+
+          dados_clinicos = paciente.get('dados_clinicos',[])
+          return dados_clinicos
+          
+       except Exception:
+          raise Exceptions.erro_manipular_cliente()
+      
+
+
 
 
     
