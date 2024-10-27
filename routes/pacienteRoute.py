@@ -42,13 +42,13 @@ async def ativarPaciente(email : str, Authorization: Annotated[Header, Depends(v
 async def buscarPaciente(email : str, Authorization: Annotated[Header, Depends(validar_token)]):
      return ControllerPaciente.buscarPaciente(email)
 
-@pacienteAPI.post("/registrar-dado-clinico/{email_paciente}", tags=["usuarios"])
-async def createDadoClinico(registro : dadosClinicos, email_paciente:str,Authorization: Annotated[Header, Depends(validar_token)]):
-     print("chegou na rota")
-     return ControllerPaciente.registrar_dado_clinico(email_paciente,dict(registro))
+@pacienteAPI.post('/novo-dados-clinicos', tags=["dados clinicos"])
+async def createDadosClinicos(registro : dadosClinicos, email_paciente:str,Authorization: Annotated[Header, Depends(validar_token)]):
+     return await ControllerPaciente.registrar_dado_clinico(email_paciente,dict(registro))
 
-@pacienteAPI.get("/listar-dados-clinicos/{email}", tags =["usuarios"])
-async def retornarDadosClinicos(email : str, Authorization: Annotated[Header, Depends(validar_token)]):
+
+@pacienteAPI.get("/buscar-dados-clinicos/{email}", tags=["dados clinicos"])
+async def buscarDadosClinicos(email:str, Authorization: Annotated[Header, Depends(validar_token)]):
      return ControllerPaciente.listar_dado_clinico(email)
      
 
