@@ -25,7 +25,7 @@ for nome in nomes:
     cnv.drawString(mm2p(100),mm2p(eixo),nome)  #utiliza parametros x e y do plano cartesiano
     eixo+=20"""
 
-cnv.drawString(mm2p(100),mm2p(150),'Tes')
+cnv.drawString(mm2p(100),mm2p(150),'<h1> Tes </h1>')
 
 #criar um círculo
 cnv.circle(mm2p(100),mm2p(150),mm2p(100))
