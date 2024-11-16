@@ -16,6 +16,7 @@ class Paciente(BaseModel):
     idade: int
     telefone: str
     email: str
+    cpf:str
     grupo: str 
     valor: float
     nomeCompletoResponsavel: str

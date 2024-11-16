@@ -19,7 +19,7 @@ app.add_middleware(
 )
 
 @financeiroAPI.post('/novo-recibo/{email_paciente}', tags=["recibo"])
-async def createRecibo(email_paciente :str, Authorization: Annotated[Header, Depends(validar_token)]):
+async def createRecibo(email_paciente:str, Authorization: Annotated[Header, Depends(validar_token)]):
      return Controller_Recibo.emitirRecibo(email_paciente, Authorization)
 
 

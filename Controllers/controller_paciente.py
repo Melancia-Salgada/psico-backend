@@ -55,6 +55,7 @@ class ControllerPaciente:
                         "idade",
                         "telefone",
                         "email",
+                        "cpf",
                         "grupo",
                         "valor",
                         "nomeCompletoResponsavel",
