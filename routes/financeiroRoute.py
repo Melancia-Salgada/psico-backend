@@ -18,9 +18,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@financeiroAPI.post('/novo-recibo', tags=["recibo"])
-async def createRecibo(paciente : Paciente, Authorization: Annotated[Header, Depends(validar_token)]):
-     return await Controller_Recibo(paciente, Authorization)
+@financeiroAPI.post('/novo-recibo/{email_paciente}', tags=["recibo"])
+async def createRecibo(email_paciente :str, Authorization: Annotated[Header, Depends(validar_token)]):
+     return Controller_Recibo.emitirRecibo(email_paciente, Authorization)
 
 
 app.include_router(financeiroAPI)

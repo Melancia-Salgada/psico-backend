@@ -5,24 +5,26 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph
 class Recibo():
     def __init__(self):
         self.file_name = "Recibo.pdf"
-        self.doc = SimpleDocTemplate(self.file_name, pagesize=A4)
-        self.styles = getSampleStyleSheet()
-        self.style_heading1 = self.styles["Heading1"]
-        self.style_normal = self.styles["Normal"]
+        self.doc = SimpleDocTemplate(self.file_name, pagesize=A4) # Cria o template do documento
+        self.styles = getSampleStyleSheet() # Obtém os estilos padrão
+        self.style_heading1 = self.styles["Heading1"] # Estilo para cabeçalhos
+        self.style_normal = self.styles["Normal"] # Estilo normal
         
 
     def gerarRecibo(self):
         html_text = f"""
             <br />
             <p>
-            Eu <strong>nome_psicologo</strong>, portador do CPF sob o Nº cpf_psicologo, declaro que recebi de nome_paciente,
-            portador do CPF de Nº cpf_paciente, a quantia de R$ valor_paciente, pela quantidade de sessoes_realizadas
+            Eu, <strong>João Pedro de Lima e Silva</strong>, portador do CPF de Nº <strong>123.456.789-10</strong>, 
+            declaro que recebi de <strong>Gabriel Almeida Ferreira </strong>
+            portador do CPF de Nº <strong> 234.567.890-12 </strong>, a quantia de <strong> R$ 200,00</strong> pela quantidade de <strong>4</strong>
             sessões de psicoterapia realizadas.
             Afirmo o presente na seguinte data:
-            data do sistema
+            <strong>16/11/2024</strong>
             </p>
-            <p>And other formatting like <font color="blue">colored</font> text or <u>underlined</u> text.</p>
             """
+        #<p>And other formatting like <font color="blue">colored</font> text or <u>underlined</u> text.</p>
+            
         
         
         # Constrói uma lista de elementos
