@@ -9,7 +9,7 @@ class User(BaseModel):
 class Psicologo(BaseModel): 
     username: str
     password:str
-    phonenumber:str
+    phonenumber:str |None = None
     email:str
     CRP:str
     CPF:str

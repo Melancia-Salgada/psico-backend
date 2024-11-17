@@ -62,7 +62,7 @@ class LoginController:
             token = jwt_token.verificar_token(token)
             print(token)
             tipo =  token["sub"]
-            if tipo=="Administrador" or tipo =="Tatuador":
+            if tipo=="Administrador" or tipo =="Psicologo":
                 print(tipo)
                 return tipo    
             else:
