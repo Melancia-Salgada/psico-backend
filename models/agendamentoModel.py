@@ -28,7 +28,7 @@ from pydantic import BaseModel
 class Agendamento(BaseModel):
     id: str | None = None
     nome: str
-    descricao: str
+    descricao: str | None
     data: str
     hora_inicio: str
     hora_fim: str

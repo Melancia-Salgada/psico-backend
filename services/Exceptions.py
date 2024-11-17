@@ -57,6 +57,12 @@ class Exceptions(Exception):
     detail="Erro ao manipular cliente no banco de dados",)
     return credentials_exception
   
+  def erro_manipular_cliente2():
+    credentials_exception = HTTPException(
+    status_code=status.HTTP_404_NOT_FOUND,
+    detail="Erro ao manipular cliente no banco de dados AAAAAAAAAAAAAAA",)
+    return credentials_exception
+  
   def erro_manipular_material():
     credentials_exception = HTTPException(
     status_code=status.HTTP_404_NOT_FOUND,

@@ -1,6 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, FastAPI, Depends,Header
-from models.pacienteModel import Paciente
+from models.pacienteModel import Paciente,dadosClinicos
 from fastapi.middleware.cors import CORSMiddleware
 from Controllers.controller_paciente import ControllerPaciente
 from routes.loginRoute import validar_token
@@ -20,8 +20,8 @@ app.add_middleware(
 )
 
 @pacienteAPI.post('/novo-paciente', tags=["usuarios"])
-async def createPaciente(paciente : Paciente, Authorization: Annotated[Header, Depends(validar_token)]):
-     return await ControllerPaciente.insertPaciente(paciente, Authorization)
+async def createPaciente(paciente : Paciente): #, Authorization: Annotated[Header, Depends(validar_token)]
+     return await ControllerPaciente.insertPaciente(paciente) #, Authorization
 
 @pacienteAPI.get("/todos-pacientes", tags=["usuarios"])
 async def listarPacientes(Authorization: Annotated[Header, Depends(validar_token)]): 
@@ -53,6 +53,15 @@ async def listarPDAS(email : str): #Authorization: Annotated[Header, Depends(val
 async def enviarPDA(planoDeAcao : PlanoDeAcao):
      return Email.emailPlanoDeAcao(planoDeAcao)
      
+
+@pacienteAPI.post('/novo-dados-clinicos', tags=["dados clinicos"])
+async def createDadosClinicos(registro : dadosClinicos, email_paciente:str,Authorization: Annotated[Header, Depends(validar_token)]):
+     return await ControllerPaciente.registrar_dado_clinico(email_paciente,dict(registro))
+
+
+@pacienteAPI.get("/buscar-dados-clinicos/{email}", tags=["dados clinicos"])
+async def buscarDadosClinicos(email:str, Authorization: Annotated[Header, Depends(validar_token)]):
+     return ControllerPaciente.listar_dado_clinico(email)
      
 
 app.include_router(pacienteAPI)
