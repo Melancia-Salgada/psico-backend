@@ -103,6 +103,17 @@ class ControllerPaciente:
       except Exception:
         raise Exceptions.erro_manipular_cliente
       
+    @staticmethod
+    #plano de ação
+    def getPlanosDeAcao(email : str):
+      try:
+        planos = [plan for plan in collection.find({"email" : email})]
+    
+        return {planos}
+      except Exception:
+        raise Exceptions.erro_manipular_cliente
+    
+      
     # dados clínicos
     #@staticmethod
     #def registrar_dado_clinico(registro: dadosClinicos):

@@ -4,6 +4,8 @@ from models.pacienteModel import Paciente
 from fastapi.middleware.cors import CORSMiddleware
 from Controllers.controller_paciente import ControllerPaciente
 from routes.loginRoute import validar_token
+from models.planoDeAcaoModel import PlanoDeAcao
+from services import Email
 
 
 app = FastAPI()
@@ -41,6 +43,16 @@ async def ativarPaciente(email : str, Authorization: Annotated[Header, Depends(v
 @pacienteAPI.get("/buscar-paciente/{email}", tags =["usuarios"])
 async def buscarPaciente(email : str, Authorization: Annotated[Header, Depends(validar_token)]):
      return ControllerPaciente.buscarPaciente(email)
+
+
+@pacienteAPI.get("/todos-pda/{email}", tags = ["usuarios"])
+async def listarPDAS(email : str): #Authorization: Annotated[Header, Depends(validar_token)]
+     return ControllerPaciente.getPlanosDeAcao
+
+@pacienteAPI.post("/enviarpda", tags = ["usuarios"])
+async def enviarPDA(planoDeAcao : PlanoDeAcao):
+     return Email.emailPlanoDeAcao(planoDeAcao)
+     
      
 
 app.include_router(pacienteAPI)
