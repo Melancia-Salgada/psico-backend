@@ -80,9 +80,9 @@ class ControllerUser:
     @staticmethod 
     async def insertPsi(psi:Psicologo, codigo_digitado:str)->dict: #
       try:
-        #existingPsi = collection.find_one({"username":psi.username})
-        #if existingPsi :
-          #raise Exceptions.usuario_existente()
+        existingPsi = collection.find_one({"username":psi.username})
+        if existingPsi :
+          raise Exceptions.usuario_existente()
   
         senha_criptografada = hashlib.sha256(psi.password.encode()).hexdigest()
         psi.password = senha_criptografada
