@@ -12,15 +12,17 @@ class dadosClinicos(BaseModel):
 
 class Paciente(BaseModel):
     nomeCompleto: str
-    sexo: str
-    idade: int
+    nascimento: str
     telefone: str
     email: str
     cpf:str
     grupo: str 
-    valor: float
-    nomeCompletoResponsavel: str
-    telefoneResponsavel: str
+    endereco: str 
+    complemento: str 
+    cep: str
+    nomeCompletoResponsavel: str | None
+    telefoneResponsavel: str | None
+    cpfResponsavel:str | None
     emailPsi: str
     dados_clinicos: List[dadosClinicos] | None = []
     tipo: Optional[str] = "Paciente"

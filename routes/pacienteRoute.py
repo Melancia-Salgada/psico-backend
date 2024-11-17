@@ -18,8 +18,8 @@ app.add_middleware(
 )
 
 @pacienteAPI.post('/novo-paciente', tags=["usuarios"])
-async def createPaciente(paciente : Paciente, Authorization: Annotated[Header, Depends(validar_token)]):
-     return await ControllerPaciente.insertPaciente(paciente, Authorization)
+async def createPaciente(paciente : Paciente): #, Authorization: Annotated[Header, Depends(validar_token)]
+     return await ControllerPaciente.insertPaciente(paciente) #, Authorization
 
 @pacienteAPI.get("/todos-pacientes", tags=["usuarios"])
 async def listarPacientes(Authorization: Annotated[Header, Depends(validar_token)]): 
