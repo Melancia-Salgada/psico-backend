@@ -17,8 +17,7 @@ class Psicologo(BaseModel):
     tipo: str |None = "Psicólogo"
     status: str | None = "Pendente"
 
-class Admin(BaseModel): 
-    username: str
+class Admin(BaseModel):
     password:str
     phonenumber:str
     email:str

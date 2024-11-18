@@ -11,7 +11,7 @@ class LoginController:
     def __init__(self):
         pass
     
-    def login(self, username: str, password: str) -> str:
+    def login(self, email: str, password: str) -> str:
         try:
             jwt_token = Token()  
             auth = Authenticator()
@@ -21,7 +21,7 @@ class LoginController:
                 #token = jwt_token.create_access_token({"sub": usuario-usuario_admin_json["tipo"], "email":usuario["email"]}, access_token_expires) 
                 #return token
         
-            usuario = auth.authenticate_user(username,password)
+            usuario = auth.authenticate_user(email,password)
             if usuario:
                 access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
                 token = jwt_token.create_access_token({"sub":usuario["tipo"], "email":usuario["email"]}, access_token_expires) 

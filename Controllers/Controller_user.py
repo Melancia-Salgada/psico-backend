@@ -36,7 +36,7 @@ class ControllerUser:
     @staticmethod
     def insertUser(psi:Psicologo)->dict:
       try:
-        existingUser = collection.find_one({"username":psi.username})
+        existingUser = collection.find_one({"email":psi.email})
         if existingUser :
           raise Exceptions.usuario_existente()
   
@@ -205,7 +205,7 @@ class ControllerUser:
     @staticmethod
     def getUser(username):
         try:
-            users = collection.find({"username": username})
+            users = collection.find({"email": username})
             print(users)
             if not users:
                raise Exceptions.erro_manipular_usuario()

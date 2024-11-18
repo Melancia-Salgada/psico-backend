@@ -15,9 +15,9 @@ class Authenticator:
     def __init__(self):
        pass
 
-    def authenticate_user(self,username:str, password:str): # autenticar e retornar um usuário
+    def authenticate_user(self,email:str, password:str): # autenticar e retornar um usuário
         try:
-            user = self.get_user(username, password)
+            user = self.get_user(email, password)
             if not user:
                 raise Exceptions.user_senha_incorretos()
             print("Achou o usuário")
@@ -30,17 +30,17 @@ class Authenticator:
             raise Exceptions.user_senha_incorretos()
         
 
-    # esta função pesquisa um usuário no banco por username e password (encriptado)
-    def get_user (self,username: str, password:str):
+    # esta função pesquisa um usuário no banco por email e password (encriptado)
+    def get_user (self,email: str, password:str):
         senha_criptografada = hashlib.sha256(password.encode()).hexdigest()
     
         # Impressões para debug
-        print(f"Username: {username}")
+        print(f"Email: {email}")
         print(f"Password: {password}")
         print(f"Senha Criptografada: {senha_criptografada}")
         
         # Buscar o usuário
-        user = collection.find_one({"username": username, "password": senha_criptografada})
+        user = collection.find_one({"email": email, "password": senha_criptografada})
         
         print(f"Usuário encontrado: {user}")
         

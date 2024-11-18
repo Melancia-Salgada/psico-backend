@@ -36,4 +36,4 @@ async def retornar_tipo_usuario(token:str):#Authorization: Annotated[str, Header
 @app.post("/login", tags=["login"])
 async def login_for_access_token(user_data: UserLogin) :
     controller = LoginController()
-    return controller.login(user_data.username, user_data.password)
+    return controller.login(user_data.email, user_data.password)
