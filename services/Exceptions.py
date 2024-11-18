@@ -74,4 +74,10 @@ class Exceptions(Exception):
       status_code=status.HTTP_404_NOT_FOUND,
       detail="Erro ao manipular o paciente")
     return credentials_exception
+  
+  def email_nao_encontrado():
+    credentials_exception = HTTPException(
+      status_code=status.HTTP_404_NOT_FOUND,
+      detail="Erro ao encontrar o email do usuário")
+    return credentials_exception
     

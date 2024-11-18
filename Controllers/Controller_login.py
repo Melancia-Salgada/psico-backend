@@ -70,5 +70,18 @@ class LoginController:
         except Exception:
             raise Exceptions.acesso_restrito_adm()
     
+    def retornar_email_do_token(token: str | None = None) -> str:
+        try:
+            jwt_token = Token() 
+            token = jwt_token.verificar_token(token)  # Decodifica o token
+            email = token["email"] # Extrai o e-mail do payload do token
+            print(email)
+            if email:
+                return email
+            else:
+                raise Exceptions.email_nao_encontrado()  # Caso o e-mail não esteja no token
+                
+        except Exception:
+            raise Exceptions.token_invalido()
     
 

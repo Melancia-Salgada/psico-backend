@@ -18,6 +18,7 @@ class Psicologo(BaseModel):
     status: str | None = "Pendente"
 
 class Admin(BaseModel):
+    username:str
     password:str
     phonenumber:str
     email:str

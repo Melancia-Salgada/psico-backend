@@ -40,6 +40,8 @@ class Token:
         except Exception:
             raise Exceptions.acesso_restrito_adm()
         
+    
+        
 
     
 
