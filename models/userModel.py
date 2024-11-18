@@ -2,8 +2,10 @@ from pydantic import BaseModel
 
 class User(BaseModel): 
     username: str
-    password:str
-    tipo: str
+    email: str | None= None
+    password:str | None = None
+    tipo: str | None = None
+    phonenumber:str |None = None
 
 
 class Psicologo(BaseModel): 

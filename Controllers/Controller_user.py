@@ -238,7 +238,7 @@ class ControllerUser:
     def updateUser(user_data: dict, username:str): 
         try:
             print(user_data)
-            query = {"username": username}
+            query = {"email": username}
             print(query)
             campos = [
                         "username",

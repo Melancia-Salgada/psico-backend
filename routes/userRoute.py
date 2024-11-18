@@ -36,7 +36,7 @@ async def editarUsuario(username:str, Authorization: Annotated[Header, Depends(v
      return user # para carregar os dados do usuário encontrado na página de atualizar dados
 
 @userAPI.patch("/atualizar-usuario/{username}", tags=["usuarios"]) 
-async def atualizarUsuario(user:User, username ,Authorization: Annotated[Header, Depends(validar_token)]):
+async def atualizarUsuario(user:User, username ): #,Authorization: Annotated[Header, Depends(validar_token)]
      return ControllerUser.updateUser(dict(user), username)
 
 @userAPI.delete("/deletar-usuario/{username}", tags=["usuarios"])
