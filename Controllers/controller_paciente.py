@@ -82,14 +82,14 @@ class ControllerPaciente:
         except Exception:
             raise Exceptions.erro_manipular_usuario()
 
-    async def insertPaciente(paciente : Paciente, psicologoEmail : str) -> dict:
+    async def insertPaciente(paciente : Paciente, psicologo : dict) -> dict:
       try:
 
         existingUser = collection.find_one({"email":paciente.email})
         if existingUser :
           raise Exceptions.usuario_existente()
         
-        paciente.emailPsi = psicologoEmail 
+        paciente.emailPsi = psicologo["email"]
         print("email psicologo chegou aqui")
         collection.insert_one(paciente.dict(by_alias=True))
         print("chegou aqui")
@@ -99,7 +99,8 @@ class ControllerPaciente:
 
 
     @staticmethod
-    def getAllPacientes(emailPsi:str):
+    def getAllPacientes(psicologo : dict):
+      emailPsi = psicologo["email"]
       try: 
         pacientes = [pc for pc in collection.find({"$and":[{"tipo" : "Paciente"}, {"emailPsi" : emailPsi}]})]
         

@@ -19,13 +19,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@pacienteAPI.post('/novo-paciente/{psicologoEmail}', tags=["usuarios"])
-async def createPaciente(paciente : Paciente,psicologoEmail:str): #, Authorization: Annotated[Header, Depends(validar_token)]
-     return await ControllerPaciente.insertPaciente(paciente,psicologoEmail) #, Authorization
+@pacienteAPI.post('/novo-paciente', tags=["usuarios"])
+async def createPaciente(paciente : Paciente): #, Authorization: Annotated[Header, Depends(validar_token)]
+     return await ControllerPaciente.insertPaciente(paciente) #, Authorization
 
-@pacienteAPI.get("/todos-pacientes/{email}", tags=["usuarios"])
-async def listarPacientes(email:str): #Authorization: Annotated[Header, Depends(validar_token)]
-     return ControllerPaciente.getAllPacientes(email) #Authorization
+@pacienteAPI.get("/todos-pacientes", tags=["usuarios"])
+async def listarPacientes(Authorization: Annotated[Header, Depends(validar_token)]): 
+     return ControllerPaciente.getAllPacientes(Authorization)
 
 @pacienteAPI.patch("/atualizar-paciente/{email}", tags=["usuarios"])
 async def atualizarPaciente(email : str, paciente : Paciente, Authorization: Annotated[Header, Depends(validar_token)]):
