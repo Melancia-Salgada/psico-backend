@@ -3,7 +3,6 @@ from models.userModel import User, Psicologo,Admin
 import hashlib
 from services.Exceptions import Exceptions
 from fastapi import HTTPException,status
-from services.Email import ControllerEmail
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -57,7 +56,7 @@ class ControllerUser:
     
     @staticmethod
     async def obterCodigoConfirmacao(psi:Psicologo):
-       
+      from services.Email import ControllerEmail
       try:
         codigo_confirmacao = await ControllerEmail.enviarEmailConfirmacao(dict(psi))
         ControllerUser.codigo_login = codigo_confirmacao

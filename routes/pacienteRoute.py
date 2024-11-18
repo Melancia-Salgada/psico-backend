@@ -3,8 +3,10 @@ from fastapi import APIRouter, FastAPI, Depends,Header
 from models.pacienteModel import Paciente,dadosClinicos
 from fastapi.middleware.cors import CORSMiddleware
 from Controllers.controller_paciente import ControllerPaciente
+from Controllers.controller_planoDeAcao import ControllerPlanoDeAcao
 from routes.loginRoute import validar_token
-
+from models.planoDeAcaoModel import PlanoDeAcao
+from services import Email
 
 app = FastAPI()
 pacienteAPI = APIRouter()
@@ -41,6 +43,16 @@ async def ativarPaciente(email : str, Authorization: Annotated[Header, Depends(v
 @pacienteAPI.get("/buscar-paciente/{email}", tags =["usuarios"])
 async def buscarPaciente(email : str, Authorization: Annotated[Header, Depends(validar_token)]):
      return ControllerPaciente.buscarPaciente(email)
+
+
+@pacienteAPI.get("/todos-pda/{email}", tags = ["usuarios"])
+async def listarPDAS(email : str): #Authorization: Annotated[Header, Depends(validar_token)]
+     return ControllerPlanoDeAcao.getPlanosDeAcao(email)
+
+@pacienteAPI.post("/enviarpda", tags = ["usuarios"])
+async def enviarPDA(planoDeAcao : PlanoDeAcao): #Authorization: Annotated[Header, Depends(validar_token)]:
+     return await Email.emailPlanoDeAcao(planoDeAcao)
+     
 
 @pacienteAPI.post('/novo-dados-clinicos', tags=["dados clinicos"])
 async def createDadosClinicos(registro : dadosClinicos, email_paciente:str,Authorization: Annotated[Header, Depends(validar_token)]):

@@ -5,7 +5,9 @@ from fastapi_mail import ConnectionConfig, FastMail, MessageSchema, MessageType
 from pydantic import BaseModel, EmailStr
 from starlette.responses import JSONResponse
 from Controllers.Controller_user import User
+from Controllers.controller_planoDeAcao import ControllerPlanoDeAcao
 from models.userModel import Psicologo
+from models.planoDeAcaoModel import PlanoDeAcao
 import random
 import string
  
@@ -112,6 +114,37 @@ class ControllerEmail:
         except Exception as e:
             # Tratamento de exceções
             print("Erro ao enviar e-mail:", e)
+    
+@staticmethod        
+async def emailPlanoDeAcao(planoDeAcao : PlanoDeAcao):
+    try:
+        email = planoDeAcao.email
+        plano = planoDeAcao.texto
+        
+        html = f"""
+            <h1>Olá,</h1>
+            <p>Um novo plano de ação foi criado por seu/sua psicólogo/a:</p>
+            <br>
+            <br>
+            <p>{plano}</p>
+            <br>
+            <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
+            <p>Atenciosamente,</p>
+            <p>EasyPsi</p>
+        """
+        
+        message = MessageSchema(
+            subject = "Novo plano de ação",
+            recipients = [email],
+            body = html,
+            subtype= MessageType.html
+        )
+        
+        ControllerPlanoDeAcao.insertPlanoDeAcao(planoDeAcao)
+        await fm.send_message(message)
+    except Exception as e:
+        print("Erro ao enviar o email", e)
+        
 
 
 

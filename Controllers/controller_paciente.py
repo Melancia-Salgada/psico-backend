@@ -3,7 +3,7 @@ from configs.db import create_mongodb_connection
 from models.pacienteModel import Paciente, dadosClinicos
 from services.Exceptions import Exceptions
 from fastapi import status
-
+from models.planoDeAcaoModel import PlanoDeAcao
 
 # Configurações de conexão com o MongoDB
 connection_string = "mongodb://localhost:27017/"
@@ -109,7 +109,7 @@ class ControllerPaciente:
         
         return {"Pacientes" : pacientes}
       except Exception:
-        raise Exceptions.erro_manipular_cliente
+        raise Exceptions.erro_manipular_cliente()
       
      #dados clínicos
     @staticmethod
