@@ -68,6 +68,10 @@ async def aprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_tok
 async def desaprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_token_admin)]
      return ControllerUser.desaprovarPsi(CPF)
 
+@userAPI.patch("/agregar-faturamento/{emailPaciente}", tags = ["usuarios"])
+async def agregarFaturamento(emailPaciente : str):
+     ControllerUser.adicionarFaturamentoMensal(emailPaciente)
+
 
 
 app.include_router(userAPI)

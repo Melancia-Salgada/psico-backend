@@ -145,6 +145,9 @@ async def emailPlanoDeAcao(planoDeAcao : PlanoDeAcao):
     except Exception as e:
         print("Erro ao enviar o email", e)
         
+@staticmethod
+    
+        
 
 
 

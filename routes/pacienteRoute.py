@@ -55,13 +55,21 @@ async def enviarPDA(planoDeAcao : PlanoDeAcao): #Authorization: Annotated[Header
      
 
 @pacienteAPI.post('/novo-dados-clinicos', tags=["dados clinicos"])
-async def createDadosClinicos(registro : dadosClinicos, email_paciente:str,Authorization: Annotated[Header, Depends(validar_token)]):
+async def createDadosClinicos(registro : dadosClinicos, email_paciente:str, Authorization: Annotated[Header, Depends(validar_token)]):
      return await ControllerPaciente.registrar_dado_clinico(email_paciente,dict(registro))
 
 
 @pacienteAPI.get("/buscar-dados-clinicos/{email}", tags=["dados clinicos"])
 async def buscarDadosClinicos(email:str, Authorization: Annotated[Header, Depends(validar_token)]):
      return ControllerPaciente.listar_dado_clinico(email)
+
+@pacienteAPI.get("/todos-devedores/{email}", tags=["usuarios"])
+async def listarDevedores(email : str): #Authorization : Annotated[Header, Depends(validar_token)]
+     return ControllerPaciente.getAllPacientesDevedores({"email" : email})
+
+@pacienteAPI.get("/valor-devido/{emailPsi}", tags=["usuarios"])
+async def getValorDevido(emailPsi : str):
+     return ControllerPaciente.somarValorDevido(ControllerPaciente.getAllPacientesDevedores({"email" : emailPsi}))
      
 
 app.include_router(pacienteAPI)
