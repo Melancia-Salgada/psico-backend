@@ -29,7 +29,7 @@ async def validar_token_admin(Authorization: Header= Depends(oauth2_scheme) ):
    return LoginController.retornar_token_admin(Authorization)
 
 @app.get("/tipo-usuario/{token}", tags=["login"])
-async def retornar_tipo_usuario(token:str):#Authorization: Annotated[str, Header()]
+async def retornar_tipo_usuario(token: str):
     return LoginController.tipo_token(token)
 
 @app.get("/recuperar-email/{token}", tags=["login"])
