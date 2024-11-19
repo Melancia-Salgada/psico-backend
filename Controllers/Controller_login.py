@@ -59,16 +59,16 @@ class LoginController:
         print(token)
         try:
             jwt_token = Token()
-            token = jwt_token.verificar_token(token)
+            payload = jwt_token.verificar_token(token)
             print(token)
-            tipo =  token["sub"]
-            if tipo=="Administrador" or tipo =="Psicologo":
+            tipo =  payload["sub"]
+            if tipo=="Administrador" or tipo =="Psicólogo":
                 print(tipo)
                 return tipo    
             else:
                 raise Exceptions.token_invalido()     
         except Exception:
-            raise Exceptions.acesso_restrito_adm()
+            raise Exceptions.token_invalido() 
     
     def retornar_email_do_token(token: str | None = None) -> str:
         try:

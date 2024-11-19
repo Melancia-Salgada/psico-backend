@@ -236,10 +236,10 @@ class ControllerUser:
         raise Exceptions.erro_manipular_usuario()
       
     @staticmethod
-    def updateUser(user_data: dict, username:str): 
+    def updateUser(user_data: dict, email:str): 
         try:
             print(user_data)
-            query = {"email": username}
+            query = {"email": email}
             print(query)
             campos = [
                         "username",

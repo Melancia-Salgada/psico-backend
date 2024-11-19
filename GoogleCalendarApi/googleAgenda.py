@@ -12,6 +12,7 @@ from fastapi import HTTPException,status
 from Controllers.Controller_user import ControllerUser
 from Controllers.controller_paciente import ControllerPaciente
 from services.Email import ControllerEmail
+import traceback
 
 # If modifying these scopes, delete the file token.json.
 SCOPES = [
@@ -133,8 +134,9 @@ class GoogleCalendar:
           print(f"Erro ao formatar a data: {e}")
           raise e
         
-    def retornar_psicologo(self,psicologo_logado: dict):
-        psi = ControllerUser.getSingleUser(psicologo_logado["email"])
+    def retornar_psicologo(psicologo_logado: str):
+        print(psicologo_logado)
+        psi = ControllerUser.getSingleUser(psicologo_logado)#["email"]
         return psi["google_calendar_id"]
     
 
@@ -165,7 +167,9 @@ class GoogleCalendar:
             psicologo_logado = psicologo["email"]
             print(psicologo_logado)
             controller_user = ControllerUser()
+            print("chegou aqui")
             id_calendar = controller_user.retornar_psicologo(psicologo_logado)
+            print(id_calendar)
             
             # Listando eventos do calendário
             eventos = self.service.events().list(calendarId=id_calendar).execute()
@@ -185,6 +189,7 @@ class GoogleCalendar:
                 fim = evento['end'].get('dateTime', evento['end'].get('date'))  # Data/hora de fim
                 email_cliente = evento['attendees'][0]['email'] if 'attendees' in evento and evento['attendees'] else 'Sem e-mail'  # Email do cliente
                  # Extraindo o link do meet, se existir
+                
                 link_meet = evento.get('extendedProperties', {}).get('shared', {}).get('link_meet', 'sem link')
 
                 # Converter o início e fim para o formato brasileiro
@@ -211,8 +216,12 @@ class GoogleCalendar:
         except HttpError as error:
             raise HTTPException(status_code=error.resp.status, detail=f"Ocorreu um erro ao listar eventos: {error}")
         except Exception as erro:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail=f"Erro interno: {str(erro)}")
-        
+        # Capturando o stack trace completo
+            traceback_str = "".join(traceback.format_exception(type(erro), erro, erro.__traceback__))
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Erro interno: {str(erro)} \nTraceback: {traceback_str}"
+            )
 
     def formatar_data_hora(self, data_hora: str):
         try:
