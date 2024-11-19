@@ -18,16 +18,16 @@ app.add_middleware(
 )
 
 @userAPI.post("/novo-usuario-admin", tags=["usuarios"])
-async def createUserAdmin(adm:Admin): # , Authorization: Annotated[Header, Depends(validar_token_admin)]
+async def createUserAdmin(adm:Admin , Authorization: Annotated[Header, Depends(validar_token_admin)]): 
      return ControllerUser.insertUser(adm)
 
 @userAPI.get("/listar-usuarios", tags=["usuarios"])
-async def listarUsuarios(): #Authorization: Annotated[Header, Depends(validar_token)]
-     print() #Authorization
+async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token)]): 
+     print(Authorization)
      return ControllerUser.getAllUsers()
 
 @userAPI.get("/buscar-usuario/{username}", tags=["usuarios"]) 
-async def buscarUsuario(username:str): #, Authorization: Annotated[Header, Depends(validar_token)]
+async def buscarUsuario(username:str, Authorization: Annotated[Header, Depends(validar_token)]): #
      return ControllerUser.getUser(username)
 
 @userAPI.get("/editar-usuario/{username}", tags=["usuarios"])
