@@ -27,7 +27,7 @@ async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token)
      return ControllerUser.getAllUsers()
 
 @userAPI.get("/buscar-usuario/{username}", tags=["usuarios"]) 
-async def buscarUsuario(username:str): #, Authorization: Annotated[Header, Depends(validar_token)]
+async def buscarUsuario(username:str, Authorization: Annotated[Header, Depends(validar_token)]): #
      return ControllerUser.getUser(username)
 
 @userAPI.get("/editar-usuario/{username}", tags=["usuarios"])
