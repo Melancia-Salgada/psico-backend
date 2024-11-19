@@ -159,13 +159,14 @@ class GoogleCalendar:
           print(f"An error occurred: {error}")
 
 
-    def listar_eventos(self, psicologo_logado: str):
+    def listar_eventos(self, psicologo: dict):
         try:
             self.auth_api()
-
+            psicologo_logado = psicologo["email"]
+            print(psicologo_logado)
             controller_user = ControllerUser()
             id_calendar = controller_user.retornar_psicologo(psicologo_logado)
-
+            
             # Listando eventos do calendário
             eventos = self.service.events().list(calendarId=id_calendar).execute()
             eventos_lista = eventos.get('items', [])
@@ -203,8 +204,9 @@ class GoogleCalendar:
 
                 eventos_principais.append(evento_principal)
 
-            # Retornar apenas os dados principais
-            return eventos_principais
+            # Backend - Alteração do formato de resposta
+            return {"Consultas": eventos_principais}
+
 
         except HttpError as error:
             raise HTTPException(status_code=error.resp.status, detail=f"Ocorreu um erro ao listar eventos: {error}")

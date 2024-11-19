@@ -35,5 +35,5 @@ class Agendamento(BaseModel):
     recurrence: List[str] | None = None
     link_meet: str | None = None
     email_cliente: str
-    preco: float
+    preco: float |None = None
   

@@ -82,7 +82,7 @@ class ControllerPaciente:
         except Exception:
             raise Exceptions.erro_manipular_usuario()
 
-    async def insertPaciente(paciente : Paciente, psicologo : dict) -> dict:
+    async def insertPaciente(paciente : Paciente, psicologo : dict):
       try:
 
         existingUser = collection.find_one({"email":paciente.email})

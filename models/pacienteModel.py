@@ -16,13 +16,13 @@ class Paciente(BaseModel):
     telefone: str
     email: str
     cpf:str
-    grupo: str 
-    endereco: str 
-    complemento: str 
-    cep: str
-    nomeCompletoResponsavel: str | None
-    telefoneResponsavel: str | None
-    cpfResponsavel:str | None
+    grupo: str | None = None
+    endereco: str | None = None
+    complemento: str | None = None
+    cep: str | None = None
+    nomeCompletoResponsavel: str | None = None
+    telefoneResponsavel: str | None = None
+    cpfResponsavel:str | None = None
     emailPsi: str
     dados_clinicos: List[dadosClinicos] | None = []
     tipo: Optional[str] = "Paciente"

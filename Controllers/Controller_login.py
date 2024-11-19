@@ -11,7 +11,7 @@ class LoginController:
     def __init__(self):
         pass
     
-    def login(self, username: str, password: str) -> str:
+    def login(self, email: str, password: str) -> str:
         try:
             jwt_token = Token()  
             auth = Authenticator()
@@ -21,7 +21,7 @@ class LoginController:
                 #token = jwt_token.create_access_token({"sub": usuario-usuario_admin_json["tipo"], "email":usuario["email"]}, access_token_expires) 
                 #return token
         
-            usuario = auth.authenticate_user(username,password)
+            usuario = auth.authenticate_user(email,password)
             if usuario:
                 access_token_expires = timedelta(ACCESS_TOKEN_EXPIRE_MINUTES)
                 token = jwt_token.create_access_token({"sub":usuario["tipo"], "email":usuario["email"]}, access_token_expires) 
@@ -70,5 +70,18 @@ class LoginController:
         except Exception:
             raise Exceptions.acesso_restrito_adm()
     
+    def retornar_email_do_token(token: str | None = None) -> str:
+        try:
+            jwt_token = Token() 
+            token = jwt_token.verificar_token(token)  # Decodifica o token
+            email = token["email"] # Extrai o e-mail do payload do token
+            print(email)
+            if email:
+                return email
+            else:
+                raise Exceptions.email_nao_encontrado()  # Caso o e-mail não esteja no token
+                
+        except Exception:
+            raise Exceptions.token_invalido()
     
 
