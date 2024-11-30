@@ -48,4 +48,10 @@ async def enviarLembreteConsulta(evento:Agendamento, Authorization: Annotated[He
     controller = GoogleCalendar()
     return await controller.enviarLembreteConfirmacao(evento)
 
+@agendaAPI.get("/retornar-agenda-usuario", tags=["agendamentos"])
+async def agendaUsuario(Authorization: Annotated[Header, Depends(validar_token)]):
+    controller = GoogleCalendar()
+    return controller.retornar_psicologo(Authorization["email"])
+
+
 app.include_router(agendaAPI)
