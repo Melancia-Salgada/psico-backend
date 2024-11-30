@@ -203,9 +203,9 @@ class ControllerUser:
             
 
     @staticmethod
-    def getUser(username):
+    def getUser(email:str):
         try:
-            users = collection.find({"email": username})
+            users = collection.find({"email": email})
             print(users)
             if not users:
                raise Exceptions.erro_manipular_usuario()
@@ -220,7 +220,7 @@ class ControllerUser:
          raise Exceptions.erro_manipular_usuario()
 
     @staticmethod
-    def getSingleUser(email):
+    def getSingleUser(email:str):
         try:
             psi = collection.find_one({"email": email})
             return psi

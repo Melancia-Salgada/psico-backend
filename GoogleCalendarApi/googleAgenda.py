@@ -134,9 +134,10 @@ class GoogleCalendar:
           print(f"Erro ao formatar a data: {e}")
           raise e
         
-    def retornar_psicologo(psicologo_logado: str):
+    def retornar_psicologo(self,psicologo_logado: str):
         print(psicologo_logado)
-        psi = ControllerUser.getSingleUser(psicologo_logado)#["email"]
+        psi_obj = ControllerUser()
+        psi = psi_obj.getUser(psicologo_logado)#["email"]
         return psi["google_calendar_id"]
     
 
@@ -168,7 +169,7 @@ class GoogleCalendar:
             print(psicologo_logado)
             controller_user = ControllerUser()
             print("chegou aqui")
-            id_calendar = controller_user.retornar_psicologo(psicologo_logado)
+            id_calendar = self.retornar_psicologo(psicologo_logado)
             print(id_calendar)
             
             # Listando eventos do calendário
@@ -215,13 +216,13 @@ class GoogleCalendar:
 
         except HttpError as error:
             raise HTTPException(status_code=error.resp.status, detail=f"Ocorreu um erro ao listar eventos: {error}")
-        except Exception as erro:
+        """except Exception as erro:
         # Capturando o stack trace completo
             traceback_str = "".join(traceback.format_exception(type(erro), erro, erro.__traceback__))
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Erro interno: {str(erro)} \nTraceback: {traceback_str}"
-            )
+            )"""
 
     def formatar_data_hora(self, data_hora: str):
         try:
