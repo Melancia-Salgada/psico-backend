@@ -19,7 +19,7 @@ class Psicologo(BaseModel):
     CPNJ: str |None = None
     tipo: str |None = "Psicólogo"
     status: str | None = "Pendente"
-    faturamentoMensal : Decimal
+    faturamentoMensal : Decimal | None = None
 
 class Admin(BaseModel):
     username:str

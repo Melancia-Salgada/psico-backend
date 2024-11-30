@@ -135,10 +135,9 @@ class GoogleCalendar:
           raise e
         
     def retornar_psicologo(self,psicologo_logado: str):
-        print(psicologo_logado)
         psi_obj = ControllerUser()
         psi = psi_obj.getUser(psicologo_logado)#["email"]
-        return psi["google_calendar_id"]
+        return psi[0]["google_calendar_id"]
     
 
     async def enviarLembreteConfirmacao(self,evento:Agendamento):
@@ -166,8 +165,7 @@ class GoogleCalendar:
         try:
             self.auth_api()
             psicologo_logado = psicologo["email"]
-            print(psicologo_logado)
-            controller_user = ControllerUser()
+            #controller_user = ControllerUser()
             print("chegou aqui")
             id_calendar = self.retornar_psicologo(psicologo_logado)
             print(id_calendar)
@@ -181,8 +179,9 @@ class GoogleCalendar:
                 return []
 
             eventos_principais = []  # Lista para armazenar os dados principais
-
+            print("ola")
             for evento in eventos_lista:
+
                 id = evento.get('id', 'Sem título')  # ID do evento
                 nome = evento.get('summary', 'Sem título')  # Nome do evento
                 descricao = evento.get('description', 'Sem descrição')  # Descrição
@@ -210,8 +209,7 @@ class GoogleCalendar:
 
                 eventos_principais.append(evento_principal)
 
-            # Backend - Alteração do formato de resposta
-            return {"Consultas": eventos_principais}
+            return eventos_principais
 
 
         except HttpError as error:
