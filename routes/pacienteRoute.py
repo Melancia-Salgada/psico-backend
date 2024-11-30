@@ -63,13 +63,6 @@ async def createDadosClinicos(registro : dadosClinicos, email_paciente:str, Auth
 async def buscarDadosClinicos(email:str, Authorization: Annotated[Header, Depends(validar_token)]):
      return ControllerPaciente.listar_dado_clinico(email)
 
-@pacienteAPI.get("/todos-devedores/{email}", tags=["usuarios"])
-async def listarDevedores(email : str): #Authorization : Annotated[Header, Depends(validar_token)]
-     return ControllerPaciente.getAllPacientesDevedores({"email" : email})
-
-@pacienteAPI.get("/valor-devido/{emailPsi}", tags=["usuarios"])
-async def getValorDevido(emailPsi : str):
-     return ControllerPaciente.somarValorDevido(ControllerPaciente.getAllPacientesDevedores({"email" : emailPsi}))
      
 
 app.include_router(pacienteAPI)

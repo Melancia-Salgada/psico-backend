@@ -18,12 +18,56 @@ collection_name = "financeiro"
 # Criando uma conexão com o MongoDB
 db = create_mongodb_connection(connection_string, database_name)
 collection = db[collection_name] 
-
+# Para acessar a collection de pacientes e manipula-la
+collectionPacientes = db["pacientes"]
+# Para acessar a collection de users e manipula-la (para o metodo adicionarFaturamentoMensal())
+collectionUsers = db["usuarios"]
 
 class Controller_Recibo:
     def __init__(self) -> None:
         pass
 
+    
+    @staticmethod
+    def somarValorDevido(pacientesDevedores : dict):
+      listaPacientesDevedores = pacientesDevedores.get("devedores")
+      valorSomado = 0
+      for pc in listaPacientesDevedores:
+        valorSomado += pc["valorMensal"]
+      
+      return valorSomado
+    
+    
+    @staticmethod
+    def getAllPacientesDevedores(psicologo : dict):
+      emailPsi = psicologo["email"]
+      try:
+        devedores = list(collectionPacientes.find({"$and":[{"mensalPago" : False}, {"emailPsi" : emailPsi}]}))
+        
+        for deve in devedores:
+          deve["_id"] = str(deve["_id"])
+          
+        return {"devedores" : devedores}
+      except Exception:
+          raise Exceptions.erro_manipular_cliente()
+    
+    
+    @staticmethod
+    def adicionarFaturamentoMensal(emailPaciente : str):
+      print("método adicionar: " + emailPaciente)
+      pacientePago = ControllerPaciente.setPacientePago(emailPaciente)
+      valorMensalPaciente = pacientePago["valorMensal"]
+      emailPsi = pacientePago["emailPsi"]
+      
+      #Prints para teste: 
+      print("EMAIL DO PSICÓLOGO " + emailPsi)
+      print("VALOR PAGO PELO PACIENTE " + str(valorMensalPaciente))
+      
+      #TÁ DANDO ERRO PQ TÔ MANIPULANDO O CONTROLLER USER
+      #Pegar valor faturado atual e somar o valor do paciente declarado pago
+      print("PSICÓLOGO DONO ============================================= : " + str(collectionUsers.find_one({"email" : emailPsi})))
+      collectionUsers.update_one({"email" : emailPsi}, {"$inc": {"faturamentoMensal" : valorMensalPaciente}})
+    
     
     def emitirRecibo(email_paciente:str,psicologo:dict) :
 

@@ -146,12 +146,6 @@ async def emailPlanoDeAcao(planoDeAcao : PlanoDeAcao):
         print("Erro ao enviar o email", e)
         
 @staticmethod
-    
-        
-
-
-
-
 async def emailEsqueceuSenha(user: User,token:str): #, token: str
     try:
         emailusuario = user["email"]
