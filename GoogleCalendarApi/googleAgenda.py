@@ -171,7 +171,7 @@ class GoogleCalendar:
             print(id_calendar)
             
             # Listando eventos do calendário
-            eventos = self.service.events().list(calendarId=id_calendar,  maxResults=3 ).execute()
+            eventos = self.service.events().list(calendarId=id_calendar).execute()
             eventos_lista = eventos.get('items', [])
 
             if not eventos_lista:
@@ -179,12 +179,9 @@ class GoogleCalendar:
                 return []
 
             eventos_principais = []  # Lista para armazenar os dados principais
-
-            count=0
+            print("ola")
             for evento in eventos_lista:
 
-                if count >3:
-                    break
                 id = evento.get('id', 'Sem título')  # ID do evento
                 nome = evento.get('summary', 'Sem título')  # Nome do evento
                 descricao = evento.get('description', 'Sem descrição')  # Descrição
@@ -212,7 +209,6 @@ class GoogleCalendar:
 
                 eventos_principais.append(evento_principal)
 
-                count= count+1
             return eventos_principais
 
 
