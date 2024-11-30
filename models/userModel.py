@@ -1,7 +1,8 @@
 from pydantic import BaseModel
+from decimal import Decimal
 
 class User(BaseModel): 
-    username: str
+    username: str | None= None
     email: str | None= None
     password:str | None = None
     tipo: str | None = None
@@ -9,15 +10,16 @@ class User(BaseModel):
 
 
 class Psicologo(BaseModel): 
-    username: str
-    password:str
-    phonenumber:str |None = None
-    email:str
-    CRP:str
-    CPF:str
+    username : str
+    password : str
+    phonenumber : str |None = None
+    email : str
+    CRP : str
+    CPF : str
     CPNJ: str |None = None
     tipo: str |None = "Psicólogo"
     status: str | None = "Pendente"
+    faturamentoMensal : Decimal
 
 class Admin(BaseModel):
     username:str
@@ -25,7 +27,7 @@ class Admin(BaseModel):
     phonenumber:str
     email:str
     CPF: str
-    tipo: str |None = "Administrador"
+    tipo: str | None = "Administrador"
 
 
 usuario_admin = Admin(

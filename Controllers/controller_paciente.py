@@ -41,6 +41,18 @@ class ControllerPaciente:
         return {"Sucesso: " : "Paciente ativado"}
       except Exception: 
         raise Exceptions.erro_manipular_cliente()
+      
+    @staticmethod
+    def setPacientePago(emailPaciente : str):
+      try:
+        paciente = collection.find_one({"email" : emailPaciente})
+        print(paciente)
+        #Atualiza o paciente
+        collection.update_one({"email" : emailPaciente}, {"$set" : {"mensalPago" : True}})
+        return paciente
+      except Exception:
+        raise Exceptions.erro_manipular_cliente()
+        
 
             
     @staticmethod
@@ -111,6 +123,22 @@ class ControllerPaciente:
       except Exception:
         raise Exceptions.erro_manipular_cliente()
       
+    
+    @staticmethod
+    def getAllPacientesDevedores(psicologo : dict):
+      emailPsi = psicologo["email"]
+      try:
+        devedores = list(collection.find({"$and":[{"mensalPago" : False}, {"emailPsi" : emailPsi}]}))
+        
+        for deve in devedores:
+          deve["_id"] = str(deve["_id"])
+          
+        return {"devedores" : devedores}
+      except Exception:
+          raise Exceptions.erro_manipular_cliente()
+        
+
+      
      #dados clínicos
     @staticmethod
     def registrar_dado_clinico(email_paciente: str, registro: dadosClinicos):
@@ -155,7 +183,16 @@ class ControllerPaciente:
           
        except Exception:
           raise Exceptions.erro_manipular_cliente()
+    
+    @staticmethod
+    def somarValorDevido(pacientesDevedores : dict):
+      listaPacientesDevedores = pacientesDevedores.get("devedores")
+      valorSomado = 0
+      for pc in listaPacientesDevedores:
+        valorSomado += pc["valorMensal"]
       
+      return valorSomado
+        
 
 
 

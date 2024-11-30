@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from typing import List, Optional
+from decimal import Decimal
 
 class dadosClinicos(BaseModel):
     data: Optional[str] = None
@@ -15,15 +16,17 @@ class Paciente(BaseModel):
     nascimento: str
     telefone: str
     email: str
-    cpf:str
+    cpf : str
     grupo: str | None = None
     endereco: str | None = None
-    complemento: str | None = None
-    cep: str | None = None
-    nomeCompletoResponsavel: str | None = None
-    telefoneResponsavel: str | None = None
-    cpfResponsavel:str | None = None
-    emailPsi: str
+    complemento : str | None = None
+    cep : str | None = None
+    nomeCompletoResponsavel : str | None = None
+    telefoneResponsavel : str | None = None
+    cpfResponsavel : str | None = None
+    emailPsi : str
     dados_clinicos: List[dadosClinicos] | None = []
+    valorMensal : Decimal | None = None
+    mensalPago : bool | None = False
     tipo: Optional[str] = "Paciente"
     status: Optional[str] = "Ativo"

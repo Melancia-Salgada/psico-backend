@@ -30,14 +30,14 @@ async def listarUsuarios(Authorization: Annotated[Header, Depends(validar_token)
 async def buscarUsuario(username:str, Authorization: Annotated[Header, Depends(validar_token)]): #
      return ControllerUser.getUser(username)
 
-@userAPI.get("/editar-usuario/{username}", tags=["usuarios"])
-async def editarUsuario(username:str, Authorization: Annotated[Header, Depends(validar_token)]):
-     user = ControllerUser.getUser(username)
+@userAPI.get("/editar-usuario/{email}", tags=["usuarios"])
+async def editarUsuario(email:str, Authorization: Annotated[Header, Depends(validar_token)]):
+     user = ControllerUser.getUser(email)
      return user # para carregar os dados do usuário encontrado na página de atualizar dados
 
-@userAPI.patch("/atualizar-usuario/{username}", tags=["usuarios"]) 
-async def atualizarUsuario(user:User, username ): #,Authorization: Annotated[Header, Depends(validar_token)]
-     return ControllerUser.updateUser(dict(user), username)
+@userAPI.patch("/atualizar-usuario/{email}", tags=["usuarios"]) 
+async def atualizarUsuario(user:User, email, Authorization: Annotated[Header, Depends(validar_token)] ): 
+     return ControllerUser.updateUser(dict(user), email)
 
 @userAPI.delete("/deletar-usuario/{username}", tags=["usuarios"])
 async def excluirUsuarios(username:str, Authorization: Annotated[Header, Depends(validar_token)]):
@@ -55,18 +55,22 @@ async def CreatePsi(psi:Psicologo,codigo):
 
 
 @userAPI.get("/listar-psicologos-pendentes", tags=["cadastro"])
-async def listarUsuariosPendentes():#Authorization: Annotated[Header, Depends(validar_token_admin)]
+async def listarUsuariosPendentes(Authorization: Annotated[Header, Depends(validar_token_admin)]):
      #print(Authorization)
      return ControllerUser.getAllUsersPendentes()
 
 
 @userAPI.patch("/aprovar-psicologo/{CPF}", tags=["usuarios"]) 
-async def aprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_token_admin)]
+async def aprovarPsi(CPF:str): #,Authorization: Annotated[Header, Depends(validar_token_admin)]
      return ControllerUser.aprovarPsi(CPF)
 
 @userAPI.patch("/desaprovar-psicologo/{CPF}", tags=["usuarios"]) 
-async def desaprovarPsi(CPF): #Authorization: Annotated[Header, Depends(validar_token_admin)]
+async def desaprovarPsi(CPF):  #,Authorization: Annotated[Header, Depends(validar_token_admin)]
      return ControllerUser.desaprovarPsi(CPF)
+
+@userAPI.patch("/agregar-faturamento/{emailPaciente}", tags = ["usuarios"])
+async def agregarFaturamento(emailPaciente : str):
+     ControllerUser.adicionarFaturamentoMensal(emailPaciente)
 
 
 
