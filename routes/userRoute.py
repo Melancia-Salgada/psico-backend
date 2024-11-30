@@ -18,7 +18,7 @@ app.add_middleware(
 )
 
 @userAPI.post("/novo-usuario-admin", tags=["usuarios"])
-async def createUserAdmin(adm:Admin , Authorization: Annotated[Header, Depends(validar_token_admin)]): 
+async def createUserAdmin(adm:Admin): # , Authorization: Annotated[Header, Depends(validar_token_admin)]
      return ControllerUser.insertUser(adm)
 
 @userAPI.get("/listar-usuarios", tags=["usuarios"])
