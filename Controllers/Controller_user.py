@@ -300,28 +300,8 @@ class ControllerUser:
         else:
             raise Exceptions.erro_manipular_usuario()
       except Exception:
-        raise Exceptions.erro_manipular_usuario()
-    
-
-    @staticmethod
-    def adicionarFaturamentoMensal(emailPaciente : str):
-      print("Chegou no controller User")
-      pacientePago = ControllerPaciente.setPacientePago(emailPaciente)
-      valorMensalPaciente = pacientePago["valorMensal"]
-      emailPsi = pacientePago["emailPsi"]
+        raise Exceptions.erro_manipular_usuario()    
       
-      print("EMAIL DO PSICÓLOGO " + emailPsi)
-      print("VALOR PAGO PELO PACIENTE " + str(valorMensalPaciente))
-      
-      #TÁ DANDO ERRO PQ TÔ MANIPULANDO O CONTROLLER USER
-      #Pegar valor faturado atual e somar o valor do paciente declarado pago
-      print("PSICÓLOGO DONO ============================================= : " + str(collection.find_one({"email" : emailPsi})))
-      collection.update_one({"email" : emailPsi}, {"$inc": {"faturamentoMensal" : valorMensalPaciente}})
-      
-      
-      
-      
-
     def retornar_psicologo(self,psicologo_logado: dict):
         psi = self.getSingleUser(psicologo_logado["email"])
         return psi["google_calendar_id"]
