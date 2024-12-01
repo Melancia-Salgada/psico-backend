@@ -68,5 +68,10 @@ async def aprovarPsi(CPF:str): #,Authorization: Annotated[Header, Depends(valida
 async def desaprovarPsi(CPF):  #,Authorization: Annotated[Header, Depends(validar_token_admin)]
      return ControllerUser.desaprovarPsi(CPF)
 
+@userAPI.get("/get-faturamento/{email}", tags=["usuarios"])
+async def getFaturamento(email):
+     return ControllerUser.getFaturamento(email)
+     
+
 
 app.include_router(userAPI)

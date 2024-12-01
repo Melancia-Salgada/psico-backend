@@ -27,6 +27,10 @@ class Paciente(BaseModel):
     emailPsi : str
     dados_clinicos: List[dadosClinicos] | None = []
     valorMensal : Decimal | None = None
-    mensalPago : bool | None = False
+    mensalPago : str | None = "pendente"
     tipo: Optional[str] = "Paciente"
     status: Optional[str] = "Ativo"
+    
+class EmailCobrando(BaseModel):
+    nomeCompleto: str
+    email : str

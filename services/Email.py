@@ -6,10 +6,13 @@ from pydantic import BaseModel, EmailStr
 from starlette.responses import JSONResponse
 from Controllers.Controller_user import User
 from Controllers.controller_planoDeAcao import ControllerPlanoDeAcao
+from Controllers.Controller_financeiro import Controller_Recibo
 from models.userModel import Psicologo
 from models.planoDeAcaoModel import PlanoDeAcao
+from models.pacienteModel import EmailCobrando
 import random
 import string
+import datetime
  
  
 # modelo de email a ser enviado
@@ -115,35 +118,72 @@ class ControllerEmail:
             # Tratamento de exceções
             print("Erro ao enviar e-mail:", e)
     
-@staticmethod        
-async def emailPlanoDeAcao(planoDeAcao : PlanoDeAcao):
-    try:
-        email = planoDeAcao.email
-        plano = planoDeAcao.texto
+    @staticmethod        
+    async def emailPlanoDeAcao(planoDeAcao : PlanoDeAcao):
+        try:
+            email = planoDeAcao.email
+            plano = planoDeAcao.texto
         
-        html = f"""
-            <h1>Olá,</h1>
-            <p>Um novo plano de ação foi criado por seu/sua psicólogo/a:</p>
-            <br>
-            <br>
-            <p>{plano}</p>
-            <br>
-            <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
-            <p>Atenciosamente,</p>
-            <p>EasyPsi</p>
-        """
+            html = f"""
+                <h1>Olá,</h1>
+                <p>Um novo plano de ação foi criado por seu/sua psicólogo/a:</p>
+                <br>
+                <br>
+                    <p>{plano}</p>
+                <br>
+                <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
+                <p>Atenciosamente,</p>
+                <p>EasyPsi</p>
+            """
         
-        message = MessageSchema(
+            message = MessageSchema(
             subject = "Novo plano de ação",
             recipients = [email],
             body = html,
             subtype= MessageType.html
-        )
+            )
         
-        ControllerPlanoDeAcao.insertPlanoDeAcao(planoDeAcao)
-        await fm.send_message(message)
-    except Exception as e:
-        print("Erro ao enviar o email", e)
+            ControllerPlanoDeAcao.insertPlanoDeAcao(planoDeAcao)
+            await fm.send_message(message)
+        except Exception as e:
+            print("Erro ao enviar o email", e)
+        
+
+    async def enviarEmailCobranca(dadosCliente : EmailCobrando):
+        try:
+            mesAtual = datetime.date.today().month
+            mesExtenso = Controller_Recibo.numeroParaMes(mesAtual)
+                
+            email = dadosCliente.email
+            nome = dadosCliente.nomeCompleto
+            
+            html = f"""
+                <h1>Olá, {nome}!</h1>
+                <p></p>
+                <br>
+                <br>
+                <p>Identificamos que você ainda não fez o pagamento das sessões de terapia referentes ao mês de {mesExtenso}.</p>
+                <br>
+                <p>Pedimos para que realize o pagamento assim que possível.
+                <br><br>
+                <br><br>
+                <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
+                <p>Atenciosamente,</p>
+                <p>EasyPsi</p>
+            """
+            
+            message = MessageSchema(
+                subject = "Lembrete de cobrança",
+                recipients = [email],
+                body = html,
+                subtype = MessageType.html
+            )
+            await fm.send_message(message)
+            return {"msg" : "Email enviado com sucesso!"}
+        except Exception as e:
+            print("Erro ao enviar o email", e)
+        
+    
         
 @staticmethod
 async def emailEsqueceuSenha(user: User,token:str): #, token: str
@@ -176,6 +216,7 @@ async def emailEsqueceuSenha(user: User,token:str): #, token: str
  
         # Envio do e-mail
         await fm.send_message(message)
+        return {"msg" : "Email Enviado!"}
     except Exception as e:
         # Tratamento de exceções
         print("Erro ao enviar e-mail:", e)

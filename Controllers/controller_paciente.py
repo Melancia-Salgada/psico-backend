@@ -2,6 +2,7 @@ from configs.db import create_mongodb_connection
 #from models.dadosClinicosModel import dadosClinicos
 from models.pacienteModel import Paciente, dadosClinicos
 from services.Exceptions import Exceptions
+from models.pacienteModel import EmailCobrando
 from fastapi import status
 from models.planoDeAcaoModel import PlanoDeAcao
 
@@ -47,13 +48,24 @@ class ControllerPaciente:
       try:
         paciente = collection.find_one({"email" : emailPaciente})
         #Atualiza o paciente
-        collection.update_one({"email" : emailPaciente}, {"$set" : {"mensalPago" : True}})
+        collection.update_one({"email" : emailPaciente}, {"$set" : {"mensalPago" : "pago"}})
         return paciente
       except Exception:
         raise Exceptions.erro_manipular_cliente()
+    
+    @staticmethod
+    async def setPacienteNaoPago(dadosCliente : EmailCobrando):
+      try:
+        from services.Email import ControllerEmail
+        emailPaciente = dadosCliente.email
+        collection.update_one({"email" : emailPaciente}, {"$set" : {"mensalPago" : "naopago"}})
+        await ControllerEmail.enviarEmailCobranca(dadosCliente) #dadosCleinte
         
-
-            
+        return {"msg" : "Paciente atualizado para não pago!"}
+      except Exception:
+        raise Exceptions.erro_manipular_cliente()
+      
+        
     @staticmethod
     def updatePaciente(user_data: dict, email : str): 
         try:

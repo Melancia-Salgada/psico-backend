@@ -236,6 +236,14 @@ class ControllerUser:
         raise Exceptions.erro_manipular_usuario()
       
     @staticmethod
+    def getFaturamento(email : str):
+      try:
+        psi = collection.find_one({"email" : email})
+        return psi["faturamentoMensal"]
+      except Exception:
+        raise Exceptions.erro_manipular_usuario()
+      
+    @staticmethod
     def updateUser(user_data: dict, email:str): 
         try:
             print(user_data)

@@ -42,7 +42,7 @@ class Controller_Recibo:
     def getAllPacientesDevedores(psicologo : dict):
       emailPsi = psicologo["email"]
       try:
-        devedores = list(collectionPacientes.find({"$and":[{"mensalPago" : False}, {"emailPsi" : emailPsi}]}))
+        devedores = list(collectionPacientes.find({"$and":[{"$or":[{"mensalPago" : "pendente"}, {"mensalPago" : "naopago"}]}, {"emailPsi" : emailPsi}]}))
         
         for deve in devedores:
           deve["_id"] = str(deve["_id"])
@@ -98,3 +98,33 @@ class Controller_Recibo:
         data_atual = datetime.datetime.now()
         data_formatada = data_atual.strftime("%d/%m/%Y")
         return data_formatada
+    
+    
+    @staticmethod
+    def numeroParaMes(mes : int):
+        
+        match mes:
+            case 1:
+                return "janeiro"
+            case 2:
+                return "fevereiro"
+            case 3:
+                return "março"
+            case 4:
+                return "abril"
+            case 5:
+                return "maio"
+            case 6:
+                return "junho"
+            case 7:
+                return "julho"
+            case 8:
+                return "agosto"
+            case 9:
+                return "setembro"
+            case 10:
+                return "outubro"
+            case 11:
+                return "novembro"
+            case 12:
+                return "dezembro"

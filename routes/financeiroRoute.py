@@ -5,7 +5,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from Controllers.controller_paciente import ControllerPaciente
 from Controllers.Controller_financeiro import Controller_Recibo
 from Controllers.Controller_financeiro import Controller_Recibo
+from models.pacienteModel import EmailCobrando
 from routes.loginRoute import validar_token
+from services.Email import ControllerEmail
 
 
 app = FastAPI()
@@ -35,6 +37,11 @@ async def getValorDevido(emailPsi : str):
 async def agregarFaturamento(emailPaciente : str):
     print("Email do paciente na rota: " + emailPaciente)
     Controller_Recibo.adicionarFaturamentoMensal(emailPaciente)
+    
+@financeiroAPI.post("/email-cobranca", tags=["recibo"])
+async def naoPago(dadosCliente : EmailCobrando):
+    return await ControllerPaciente.setPacienteNaoPago(dadosCliente)
+    
 
 
 app.include_router(financeiroAPI)
