@@ -24,7 +24,7 @@ class Paciente(BaseModel):
     nomeCompletoResponsavel : str | None = None
     telefoneResponsavel : str | None = None
     cpfResponsavel : str | None = None
-    emailPsi : str
+    emailPsi : str | None = ""
     dados_clinicos: List[dadosClinicos] | None = []
     valorMensal : Decimal | None = None
     mensalPago : str | None = "pendente"
