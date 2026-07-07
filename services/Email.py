@@ -194,7 +194,7 @@ async def emailEsqueceuSenha(user: User,token:str): #, token: str
  
         html = """
             <h1>Olá, {username}</h1>
-            <p>Recebemos recentemente um pedido de recuperação de senha da sua conta cadastrada na InkDash</p>
+            <p>Recebemos recentemente um pedido de recuperação de senha da sua conta cadastrada na EasyPsi</p>
             <br>
             <p>Se você não solicitou esse e-mail de redefinição de senha, não precisa se preocupar</p>
             <p>Basta ignorar esse e-mail</p>
@@ -204,11 +204,11 @@ async def emailEsqueceuSenha(user: User,token:str): #, token: str
             <br>
             <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
             <p>Atenciosamente,</p>
-            <p>Equipe da InkDash</p>
+            <p>Equipe da EasyPsi</p>
         """.format(username=username, redefinirURL= redefinirURL)
  
         message = MessageSchema(
-            subject="Recuperação de Senha - InkDash",
+            subject="Recuperação de Senha - EasyPsi",
             recipients=[emailusuario],
             body=html,
             subtype=MessageType.html
@@ -233,11 +233,11 @@ async def senhaRedefinida(user: User):
             <br>
             <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
             <p>Atenciosamente,</p>
-            <p>Equipe da InkDash</p>
+            <p>Equipe da EasyPsi</p>
         """.format(username=user["name"])
  
         message = MessageSchema(
-            subject="A redefinição de senha foi um sucesso! - InkDash",
+            subject="A redefinição de senha foi um sucesso! - EasyPsi",
             recipients=[emailusuario],
             body=html,
             subtype=MessageType.html
@@ -259,7 +259,7 @@ async def email24Antes(email: str):
         
         html = """
             <h1>Olá,</h1>
-            <p>Este é um lembrete do seu agendamento de tatuagem na InkDash amanhã.</p>
+            <p>Este é um lembrete da sua consulta na EasyPsi amanhã.</p>
             <br>
             <br>
             <p>Estamos ansiosos para vê-lo!</p>
@@ -267,11 +267,11 @@ async def email24Antes(email: str):
             <br>
             <p>Este é um e-mail automático, não é preciso responder &#128521;</p>
             <p>Atenciosamente,</p>
-            <p>Equipe da InkDash</p>
+            <p>Equipe da EasyPsi</p>
         """
         
         message = MessageSchema(
-            subject="Lembrete de Tatuagem Marcada - InkDash",
+            subject="Lembrete de Consulta Marcada - EasyPsi",
             recipients=[emailusuario],
             body=html,
             subtype=MessageType.html
