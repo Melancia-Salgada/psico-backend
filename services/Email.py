@@ -22,7 +22,7 @@ class EmailSchema(BaseModel):
 # configurações de conexão com o email, está com bug na senha, que deve ser gerada pelo gmail
 conf = ConnectionConfig(
     MAIL_USERNAME ="dsm.devspsi@gmail.com",
-    MAIL_PASSWORD = "geqe cqdo nxnn azsi",
+    MAIL_PASSWORD = "secret",
     MAIL_FROM = "dsm.devspsi@gmail.com",
     MAIL_PORT = 587,
     MAIL_SERVER = "smtp.gmail.com",
