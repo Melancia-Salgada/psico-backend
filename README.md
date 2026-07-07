@@ -2,9 +2,9 @@
 ![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)![MongoDB](https://img.shields.io/badge/MongoDB-%234ea94b.svg?style=for-the-badge&logo=mongodb&logoColor=white)
 > A aplicação permite login, busca de dados de Pokémon e endereço via APIs, cadastro e listagem no backend FastAPI, com opções de editar e excluir, e usa cache para reduzir requisições repetidas.
 
-## 🚀 Instalando a PokeCEP
+## 🚀 Instalando a EasyPsi
 
-Para instalar a Inkdash, siga estas etapas:
+Para instalar o back-end da EasyPsi, siga estas etapas:
 
 1. Após clonar os arquivos em sua máquina, abra o terminal.
 2. Utilize os seguintes comandos para baixar as dependências.
@@ -61,5 +61,5 @@ npm start
 mongodb://localhost:27017
 ```
 2. Crie um banco chamando "easypsi".
-3. Dentro do banco crie as collection.
+3. Dentro do banco, crie as collections.
 
