@@ -33,9 +33,9 @@ class Admin(BaseModel):
 usuario_admin = Admin(
     username="system",
     password="admin123",
-    phonenumber="1234567890",  # Substitua pelo número real
-    email="system@example.com",  # Substitua pelo email real
-    CPF="123.456.789-00"  # Substitua pelo CPF real
+    phonenumber="1234567890",  
+    email="system@example.com",  
+    CPF="123.456.789-00"  
 )
 
 # Convertendo para JSON
