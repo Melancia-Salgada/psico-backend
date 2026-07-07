@@ -2,8 +2,8 @@ from typing import Dict, List
 from pydantic import BaseModel
 
 """event = {
-              'summary': 'CHUPA MINHA BOLAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
-              'description': 'TO CORINGANDODDDDDOOOOOOOOOO22222222222',
+              'summary': 'Summary sample',
+              'description': 'Desc',
               'start': {
                   'dateTime': (datetime.datetime.now() + datetime.timedelta(days=1)).replace(hour=19, minute=0).isoformat(),
                   'timeZone': 'America/Sao_Paulo',
